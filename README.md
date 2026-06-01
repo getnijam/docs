@@ -73,13 +73,17 @@ entirely client-side, and needs no external service or config.
 
 ## Deploy to docs.nijam.dev (Vercel)
 
-This is a static site, so deploy it as its own Vercel project (separate from `web-app`):
+This is a static site, so deploy it as its own Vercel project (separate from `web-app`). Build settings
+are pinned in [`vercel.json`](./vercel.json) (framework `astro`, build `astro build`, output `dist/`), so
+there's nothing to configure in the dashboard:
 
 1. Push this folder to a Git repo (e.g. `getnijam/docs`).
-2. In Vercel, **Import** that repo. Vercel auto-detects Astro — no build config needed
-   (build `astro build`, output `dist/`).
+2. In Vercel, **Import** that repo. It reads `vercel.json` — just confirm and deploy.
 3. Add the domain **docs.nijam.dev** in the project's Domains settings and point a `docs` CNAME at the
    value Vercel gives you.
 4. Every push to `main` rebuilds and redeploys.
 
 If the canonical host ever changes, update `site` in `astro.config.mjs`.
+
+> This is a **static** deploy — Vercel serves `dist/` from its CDN and Pagefind search runs client-side.
+> No SSR adapter (`@astrojs/vercel`) is needed; only add one if you later introduce on-demand rendering.
