@@ -1,0 +1,17 @@
+/* Nijam brand accent — teal, derived from the logo gradient (#007595 → #0073b6). */
+:root {
+	--sl-color-accent-low: #002c3a;
+	--sl-color-accent: #0a7ba8;
+	--sl-color-accent-high: #9fd6ea;
+}
+
+:root[data-theme='light'] {
+	--sl-color-accent-low: #c4e7f4;
+	--sl-color-accent: #00749e;
+	--sl-color-accent-high: #00323f;
+}
+
+/* Slightly tighter, rounded logo mark in the header. */
+.site-title img {
+	border-radius: 6px;
+}

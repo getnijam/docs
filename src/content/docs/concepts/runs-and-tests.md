@@ -1,0 +1,43 @@
+---
+title: Runs & tests
+description: How a Playwright run maps to Nijam, and what counts toward your usage.
+sidebar:
+  order: 3
+---
+
+## Runs
+
+A **run** is one invocation of `playwright test`. When the suite finishes, the reporter ships the run to
+Nijam with everything needed to place it in history:
+
+- **Results** — every test that executed, with its status (passed, failed, timed out, skipped) and
+  duration.
+- **Git & CI metadata** — commit, branch, PR number, CI run id, CI run URL, and the git author
+  (email + name). On supported CI providers these are [detected automatically](/reporter/ci-integration/).
+- **Environment** — the optional [`environment`](/reporter/environments/) tag, or **Unset** if you didn't
+  pass one.
+
+Runs are listed newest-first in the dashboard, and you can filter by branch, environment, and status.
+
+## Tests
+
+Within a run, each test is a **test result**. Across runs, results for the same test accumulate into that
+test's **history** — the timeline that tells you whether a failure is new, recurring, or
+[flaky](/concepts/flakiness/). The test detail page shows that history alongside the test's source and its
+latest trace.
+
+## Retries
+
+Playwright retries are reported as part of the run. A test that fails then passes on retry is recorded as
+such — which is exactly the signal Nijam uses to flag flakiness.
+
+## What counts toward usage
+
+Your plan's allowance is measured in **test results** — i.e. individual test executions stored, summed
+across all runs in a billing cycle. A run with 200 tests contributes 200 toward your cycle; retries that
+store an additional result count too.
+
+- **Free** caps at **1,000 test results per cycle** and blocks further uploads once reached.
+- **Pro** includes **10,000 per cycle**, then bills overage per test — it never blocks.
+
+See [Usage & billing cycles](/billing/usage/) for the details.

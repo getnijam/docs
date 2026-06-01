@@ -1,0 +1,53 @@
+---
+title: Nijam Docs
+description: Test analytics for Playwright — run history, flakiness scoring, and trace storage. Think Sentry, for your Playwright suite.
+template: splash
+hero:
+  tagline: Test analytics for Playwright. Ship the reporter, get run history, flakiness scoring, and trace storage — without touching your test code.
+  image:
+    file: ../../assets/logo.svg
+  actions:
+    - text: Get started
+      link: /getting-started/quickstart/
+      icon: right-arrow
+    - text: Install the reporter
+      link: /reporter/installation/
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+
+## What is Nijam?
+
+Nijam collects every Playwright run from your CI, stores its history, and surfaces the things a raw test
+report can't: which tests are **flaky**, which ones **regressed**, and the **traces** for the failures —
+all in one dashboard. You add a Playwright reporter; Nijam does the rest.
+
+<CardGrid stagger>
+	<Card title="Drop-in reporter" icon="rocket">
+		Add `@nijam/pw-reporter` to `playwright.config.ts`. It's **fail-soft** — if Nijam is
+		unreachable it logs a warning and never breaks your CI.
+	</Card>
+	<Card title="Run history" icon="bars">
+		Every run is stored with its commit, branch, PR, CI link, and author — so you can see how a
+		test behaves over time, not just on the last run.
+	</Card>
+	<Card title="Flakiness scoring" icon="random">
+		Nijam spots tests that pass and fail on the same code and ranks them, so you fix the noisiest
+		ones first.
+	</Card>
+	<Card title="Traces & source" icon="document">
+		Failure traces stream straight to storage; spec source is captured so the test detail page
+		renders inline with its history.
+	</Card>
+</CardGrid>
+
+## Start here
+
+<CardGrid>
+	<LinkCard title="Quickstart" href="/getting-started/quickstart/" description="From sign-up to your first run in five minutes." />
+	<LinkCard title="Reporter configuration" href="/reporter/configuration/" description="Every option, with defaults and examples." />
+	<LinkCard title="CI integration" href="/reporter/ci-integration/" description="GitHub Actions, GitLab, CircleCI, Bitbucket — auto-detected." />
+	<LinkCard title="Plans & pricing" href="/billing/plans/" description="Free and Pro, what's included, and how usage is billed." />
+</CardGrid>
