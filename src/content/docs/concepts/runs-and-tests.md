@@ -41,3 +41,11 @@ store an additional result count too.
 - **Pro** includes **10,000 per cycle**, then bills overage per test — it never blocks.
 
 See [Usage & billing cycles](/billing/usage/) for the details.
+
+## Deleting a run
+
+**Admins** can delete an individual run from its **⋮ menu** in the runs list (you confirm by typing
+`delete`). This permanently removes the run, its test results, and its stored artifacts (traces,
+screenshots, videos) — it can't be undone. Members can't delete runs (see [Roles and
+permissions](/concepts/organizations/#roles-and-permissions)). To remove an entire project at once,
+see [Deleting a project](/concepts/projects/#deleting-a-project).

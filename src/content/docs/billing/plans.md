@@ -42,11 +42,18 @@ For teams running Nijam in CI day to day:
 
 See [Usage & billing cycles](/billing/usage/) for exactly how the meter and cycle work.
 
+## Who can manage billing
+
+Billing actions and amounts are **admin-only** (see [Roles and
+permissions](/concepts/organizations/#roles-and-permissions)). Admins upgrade, manage the subscription,
+and see charges; members can open the Billing screen to view **usage** (tests and seats) but not amounts.
+When metered overage is in effect, members see a "contact an admin" note instead of a figure.
+
 ## Upgrading
 
-Open your organization's **Billing** screen and choose **Upgrade**. Checkout, invoices, and payment are
-handled by [Polar](https://polar.sh) (our merchant of record) — you'll get a hosted checkout and a customer
-portal to manage the subscription and download invoices.
+An **admin** opens the organization's **Billing** screen and chooses **Upgrade**. Checkout, invoices, and
+payment are handled by [Polar](https://polar.sh) (our merchant of record) — you'll get a hosted checkout
+and a customer portal to manage the subscription and download invoices.
 
 ## Downgrading / canceling
 

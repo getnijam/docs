@@ -11,6 +11,12 @@ Usage is counted in **test results** — individual test executions stored — s
 current cycle. A run with 200 tests adds 200; retries that store another result count too. You can watch
 the current total on your organization's **Billing** screen.
 
+:::note
+Everyone in the org sees **usage** here. The **amounts** — the estimated charge, invoices, and billing
+actions — are visible to **admins** only; members see a "contact an admin" note when metered overage is in
+effect. See [Roles and permissions](/concepts/organizations/#roles-and-permissions).
+:::
+
 ## When the cycle resets
 
 - **Free** cycles are **anniversary-based**: they reset on the same day-of-month your organization was

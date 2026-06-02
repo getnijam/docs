@@ -39,3 +39,10 @@ upload, so that's the one you keep in CI secrets.
 
 A good default is **one project per repository**. If a single repo runs several independent suites you
 want to track separately, give each its own project (and its own `projectId`).
+
+## Deleting a project
+
+An **admin** can delete a project from its **Settings → Danger zone** (you confirm by typing the project's
+name). This permanently removes the project and **everything in it** — every run, test result, and stored
+artifact (traces, screenshots, videos) — and can't be undone. Deleting individual **runs** is also
+admin-only; see [Runs & tests](/concepts/runs-and-tests/#deleting-a-run).
