@@ -34,6 +34,7 @@ export default defineConfig({
 				{ label: 'Getting Started', items: [{ autogenerate: { directory: 'getting-started' } }] },
 				{ label: 'Core Concepts', items: [{ autogenerate: { directory: 'concepts' } }] },
 				{ label: 'The Reporter', items: [{ autogenerate: { directory: 'reporter' } }] },
+				{ label: 'Integrations', items: [{ autogenerate: { directory: 'integrations' } }] },
 				{ label: 'Billing', items: [{ autogenerate: { directory: 'billing' } }] },
 				{ label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },
 			],
