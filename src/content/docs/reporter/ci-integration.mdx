@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
 Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the reporter
 **detects them automatically** from your CI provider, so each run lands in history with full context.
@@ -21,8 +21,9 @@ order, per field:
 4. Empty (branch is left unset → the dashboard shows "No Branch Info")
 
 <Aside type="note">
-Author **email** isn't exposed by every provider. GitHub, CircleCI, and Bitbucket don't surface a
-commit-author email, so the reporter falls back to `git log -1` and then `git config user.email`.
+  Author **email** isn't exposed by every provider. GitHub, CircleCI, and
+  Bitbucket don't surface a commit-author email, so the reporter falls back to
+  `git log -1` and then `git config user.email`.
 </Aside>
 
 ## Supported providers
@@ -105,31 +106,36 @@ pipelines:
 
 ## Sharded runs
 
-When you split tests across machines with Playwright's `--shard=i/N`, **each shard is a separate
-process** and they don't talk to each other. Nijam clubs them into **one run** server-side (they share
-the CI run id), and a failure in any shard marks that run **Failing** right away.
+When you split a suite across CI jobs, they all **club into one Nijam run** (they share the CI run id),
+and a failure in any job flips that run to **Failing** right away. The dashboard shows
+**running / failing** live until the run completes — and **how it completes depends on how you split**:
 
-Because no single shard knows when the others finish, **each shard only streams its results — it does not
-finalize the run.** You add **one final step, after the whole matrix**, that tells Nijam to mark the run
-complete (which is when the Slack notification fires). Until then the run shows **running / failing** live.
+- **Playwright `--shard=i/N`** — auto-detected from `config.shard`. Each shard streams its results and
+  reports when it finishes; because Playwright knows the **total**, Nijam completes the run **once every
+  shard has reported**. Nothing to configure — **no extra step**.
+- **A matrix where each job runs different specs** (no `--shard` — e.g. one spec file per job) — there's
+  **no known total**, so each job must _not_ finalize on its own. Set **`autoComplete: false`** in
+  `playwright.config.ts` (or the **`NIJAM_AUTO_COMPLETE=false`** env var), then add **one post-matrix
+  step** that calls `POST /v1/runs/complete` to mark the run done.
 
 <Aside type="caution">
-If you shard, this completion step is **required** — without it a sharded run never reaches a final
-status. As a safety net, Nijam auto-marks any run with **no activity for over an hour** as **Canceled**,
-so a missing step never leaves a run stuck on "Running".
+  As a safety net, Nijam auto-marks any run with **no activity for over an hour**
+  as **Canceled** — so a crashed shard or a forgotten completion step never leaves
+  a run stuck on "Running".
 </Aside>
 
-The step is a single HTTP call needing your **API key**, **project id**, and the **CI run id** — and it
-must run in the **same pipeline/workflow** as the shards (so the run id matches what they sent):
-
 <Tabs>
-<TabItem label="GitHub Actions">
+<TabItem label="Playwright --shard">
+
+Auto-detected — each shard self-reports and the run completes once all four are in. No `autoComplete`, no
+completion step.
 
 ```yaml title=".github/workflows/e2e.yml"
 jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
         shard: [1, 2, 3, 4]
     steps:
@@ -141,10 +147,37 @@ jobs:
       - run: npx playwright test --shard=${{ matrix.shard }}/4
         env:
           NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+```
 
-  nijam-complete:
-    needs: [test]        # run after every shard
-    if: always()         # complete even if some shards failed
+</TabItem>
+<TabItem label="Spec-per-job matrix">
+
+Each job runs a different spec, so the total isn't known: `NIJAM_AUTO_COMPLETE=false` stops every job
+finalizing, and a final `summary` job completes the run once — pass the **CI run id the jobs shared**
+(`GITHUB_RUN_ID`) so it targets the right run.
+
+```yaml title=".github/workflows/e2e.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        spec: [cart, checkout, billing, search] # one spec per job
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test ${{ matrix.spec }}.spec.ts
+        env:
+          NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+          NIJAM_AUTO_COMPLETE: "false" # don't finalize per job
+
+  summary:
+    needs: [test] # after every spec job
+    if: always() # complete even if some failed
     runs-on: ubuntu-latest
     steps:
       - run: |
@@ -157,6 +190,10 @@ jobs:
 </TabItem>
 <TabItem label="GitLab CI">
 
+`parallel` + `--shard` is auto-detected, same as GitHub — no completion step. (For a spec-per-job matrix on
+GitLab, set `NIJAM_AUTO_COMPLETE=false` and add a `needs: [e2e]` job that POSTs to `/v1/runs/complete` with
+`ciRunId=$CI_PIPELINE_ID`.)
+
 ```yaml title=".gitlab-ci.yml"
 e2e:
   parallel: 4
@@ -166,37 +203,27 @@ e2e:
     - npx playwright test --shard=$CI_NODE_INDEX/$CI_NODE_TOTAL
   variables:
     NIJAM_API_KEY: $NIJAM_API_KEY
-
-nijam-complete:
-  needs: [e2e]
-  when: always
-  script:
-    - >
-      curl -sf -X POST "https://api.nijam.dev/v1/runs/complete"
-      -H "Authorization: Bearer $NIJAM_API_KEY"
-      -H "Content-Type: application/json"
-      -d "{\"projectId\":\"<your-project-id>\",\"ciRunId\":\"$CI_PIPELINE_ID\"}"
 ```
 
 </TabItem>
 </Tabs>
 
-The **`ciRunId` must equal the value the shards sent** — the same one the reporter detects
-(`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …), which is shared across every job in the run. On providers whose
-CI run id is *job-level* (e.g. CircleCI's `CIRCLE_BUILD_NUM`), pass the shared
-workflow id through to the final step instead. Non-sharded runs need none of this — the reporter
-finalizes them itself.
+Only the **spec-per-job** case calls `/v1/runs/complete`, and its **`ciRunId` must equal the value the jobs
+sent** — the same one the reporter detects (`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …), shared across every job
+in the run. On providers whose CI run id is _job-level_ (e.g. CircleCI's `CIRCLE_BUILD_NUM`), pass the
+shared workflow id through to the final step instead. Single-job and `--shard` runs need none of this —
+they complete on their own.
 
 ## Other CI systems
 
 On a provider not listed above, set the **generic** variables and the reporter picks them up:
 
-| Variable     | Maps to       |
-| ------------ | ------------- |
-| `COMMIT_SHA` | commit        |
-| `BRANCH`     | branch        |
-| `CI_RUN_ID`  | CI run id     |
-| `CI_URL`     | CI run URL    |
+| Variable     | Maps to    |
+| ------------ | ---------- |
+| `COMMIT_SHA` | commit     |
+| `BRANCH`     | branch     |
+| `CI_RUN_ID`  | CI run id  |
+| `CI_URL`     | CI run URL |
 
 If none are set, the reporter still falls back to `git`, so local runs are attributed too. The full
 variable list lives in the [CI variables reference](/reference/ci-variables/).
