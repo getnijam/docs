@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-sections';
 
 // https://astro.build/config
 export default defineConfig({
@@ -22,6 +23,9 @@ export default defineConfig({
 			},
 			favicon: '/favicon.svg',
 			customCss: ['./src/styles/custom.css'],
+			// Adds `collapse={…}` support to code blocks (e.g. the AI prompt on the home
+			// page shows a few lines + copy button, expandable on click).
+			expressiveCode: { plugins: [pluginCollapsibleSections()] },
 			social: [{ icon: 'github', label: 'GitHub', href: 'https://github.com/getnijam/pw-reporter' }],
 			// Link each page to its source on GitHub. Update once the docs repo exists.
 			editLink: {
