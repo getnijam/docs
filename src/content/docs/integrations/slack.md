@@ -47,6 +47,21 @@ Notifications fire when a run is **finalized** — once, after the last shard re
 - **Per-project override** — in a project's **Settings → Slack notifications**, point that project at a
   different channel, or **mute** it entirely. Projects with no override inherit the org default.
 
+## Branch filtering
+
+By default a project posts runs from **every branch**. To cut the noise, open a project's
+**Settings → Slack notifications → Branches** and list the branches you care about (e.g. `main`,
+`release`, `develop`). Once the list is non-empty, only runs on those branches post — everything else
+stays quiet.
+
+- It's a free-form tag input: pick from your recent branches or type any branch name and press
+  **Enter** to add it. `main` is always offered.
+- Matching is **exact** against the run's detected branch. A run with no branch is skipped whenever a
+  filter is set.
+- Leave the list empty to post on every branch.
+
+Branch filtering is per-project and **admin-only**, like the channel override above.
+
 ## Styling
 
 Under **Styling**:
