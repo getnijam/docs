@@ -103,6 +103,90 @@ pipelines:
 </TabItem>
 </Tabs>
 
+## Sharded runs
+
+When you split tests across machines with Playwright's `--shard=i/N`, **each shard is a separate
+process** and they don't talk to each other. Nijam clubs them into **one run** server-side (they share
+the CI run id), and a failure in any shard marks that run **Failing** right away.
+
+Because no single shard knows when the others finish, **each shard only streams its results — it does not
+finalize the run.** You add **one final step, after the whole matrix**, that tells Nijam to mark the run
+complete (which is when the Slack notification fires). Until then the run shows **running / failing** live.
+
+<Aside type="caution">
+If you shard, this completion step is **required** — without it a sharded run never reaches a final
+status. As a safety net, Nijam auto-marks any run with **no activity for over an hour** as **Canceled**,
+so a missing step never leaves a run stuck on "Running".
+</Aside>
+
+The step is a single HTTP call needing your **API key**, **project id**, and the **CI run id** — and it
+must run in the **same pipeline/workflow** as the shards (so the run id matches what they sent):
+
+<Tabs>
+<TabItem label="GitHub Actions">
+
+```yaml title=".github/workflows/e2e.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test --shard=${{ matrix.shard }}/4
+        env:
+          NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+
+  nijam-complete:
+    needs: [test]        # run after every shard
+    if: always()         # complete even if some shards failed
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sf -X POST "https://api.nijam.dev/v1/runs/complete" \
+            -H "Authorization: Bearer ${{ secrets.NIJAM_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"projectId\":\"<your-project-id>\",\"ciRunId\":\"$GITHUB_RUN_ID\",\"ciRunAttempt\":\"$GITHUB_RUN_ATTEMPT\"}"
+```
+
+</TabItem>
+<TabItem label="GitLab CI">
+
+```yaml title=".gitlab-ci.yml"
+e2e:
+  parallel: 4
+  image: mcr.microsoft.com/playwright:latest
+  script:
+    - npm ci
+    - npx playwright test --shard=$CI_NODE_INDEX/$CI_NODE_TOTAL
+  variables:
+    NIJAM_API_KEY: $NIJAM_API_KEY
+
+nijam-complete:
+  needs: [e2e]
+  when: always
+  script:
+    - >
+      curl -sf -X POST "https://api.nijam.dev/v1/runs/complete"
+      -H "Authorization: Bearer $NIJAM_API_KEY"
+      -H "Content-Type: application/json"
+      -d "{\"projectId\":\"<your-project-id>\",\"ciRunId\":\"$CI_PIPELINE_ID\"}"
+```
+
+</TabItem>
+</Tabs>
+
+The **`ciRunId` must equal the value the shards sent** — the same one the reporter detects
+(`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …), which is shared across every job in the run. On providers whose
+CI run id is *job-level* (e.g. CircleCI's `CIRCLE_BUILD_NUM`), pass the shared
+workflow id through to the final step instead. Non-sharded runs need none of this — the reporter
+finalizes them itself.
+
 ## Other CI systems
 
 On a provider not listed above, set the **generic** variables and the reporter picks them up:
