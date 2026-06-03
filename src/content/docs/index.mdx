@@ -43,6 +43,40 @@ all in one dashboard. You add a Playwright reporter; Nijam does the rest.
 	</Card>
 </CardGrid>
 
+## Set it up with AI
+
+Using Cursor, Claude Code, Copilot, or any other AI coding assistant? Paste this prompt and it'll install
+and wire up the reporter for you — just swap in your project ID from the [dashboard](https://www.nijam.dev).
+
+```text title="Prompt — add the Nijam reporter"
+Add the Nijam Playwright reporter (@nijam/pw-reporter) to this project.
+
+1. Install @nijam/pw-reporter as a dev dependency, using whichever package manager
+   this repo already uses (npm i -D / yarn add -D / pnpm add -D).
+
+2. In playwright.config.ts, add it to the `reporter` array WITHOUT removing any
+   existing reporters:
+
+   reporter: [
+     ['@nijam/pw-reporter', {
+       apiKey: process.env.NIJAM_API_KEY,
+       projectId: 'YOUR_PROJECT_ID',
+     }],
+   ]
+
+3. Read the API key from process.env.NIJAM_API_KEY — never hardcode it. Remind me to
+   set NIJAM_API_KEY as a CI secret, and to add it to .env.local for local runs.
+
+4. Do not change any test code. The reporter is fail-soft (it never breaks CI) and
+   auto-detects commit, branch, PR, and CI metadata from the environment.
+
+Get YOUR_PROJECT_ID from my project in the Nijam dashboard: https://www.nijam.dev
+Reporter docs: https://docs.nijam.dev/reporter/configuration/
+```
+
+Prefer to wire it up by hand? The [reporter installation](/reporter/installation/) guide walks through the
+same steps.
+
 ## Start here
 
 <CardGrid>
