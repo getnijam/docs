@@ -1,3 +1,10 @@
+@import '@fontsource-variable/dm-sans';
+
+/* DM Sans across the docs (matches the app); Starlight keeps its default mono for code. */
+:root {
+	--sl-font: 'DM Sans Variable', sans-serif;
+}
+
 /* Nijam brand accent — teal, derived from the logo gradient (#007595 → #0073b6). */
 :root {
 	--sl-color-accent-low: #002c3a;
