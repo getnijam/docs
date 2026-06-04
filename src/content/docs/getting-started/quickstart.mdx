@@ -78,10 +78,13 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
    extra config.
 
    <Aside type="tip">
-     As the run starts, the reporter prints a link to it straight to your terminal (and your CI logs):
+     The reporter prints a link to the run straight to your terminal (and your CI logs) — once when it
+     **starts** and again when it **finishes**, so it's there to click without scrolling back:
 
      ```text
      [nijam] run started — view it at https://www.nijam.dev/...
+     ...
+     [nijam] run finalized (12/14 passed) — view it at https://www.nijam.dev/...
      ```
 
      Click it to jump to the run in the dashboard — no need to go hunting for it. (Set `silent: true` to

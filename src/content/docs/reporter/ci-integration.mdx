@@ -11,11 +11,13 @@ Nijam is built to run in CI. You don't pass commit, branch, PR, or author by han
 **detects them automatically** from your CI provider, so each run lands in history with full context.
 
 <Aside type="tip">
-  When a run starts, the reporter prints its dashboard link to **stdout**, so it lands right in your **CI
-  run logs** (and your terminal locally):
+  The reporter prints the run's dashboard link to **stdout** — both when the run **starts** and when it
+  **finishes** — so it lands right in your **CI run logs** (and your terminal locally):
 
 ```text
 [nijam] run started — view it at https://www.nijam.dev/...
+...
+[nijam] run finalized (12/14 passed) — view it at https://www.nijam.dev/...
 ```
 
   Most CI log viewers make the URL clickable — open it to jump straight from the build to the run in Nijam.
