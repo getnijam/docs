@@ -12,7 +12,7 @@ and meters usage beyond a generous included allowance.
 
 |                        | Free                          | Pro — **$20/mo**                                       |
 | ---------------------- | ----------------------------- | ------------------------------------------------------ |
-| Test results / cycle   | **1,000** (hard cap, blocks)  | **10,000 included**, then **$0.002 / test**, no block  |
+| Test results / cycle   | **1,000** (hard cap, blocks)  | **10,000 included**, then **$0.001 / test**, no block  |
 | Overage                | —                             | Metered, billed in arrears on your next invoice        |
 | Seats (members)        | **2**                         | **Unlimited**                                          |
 | Trace & run retention  | **7 days**                    | **90 days**                                            |
@@ -34,11 +34,17 @@ Everything you need to evaluate Nijam on a real suite:
 For teams running Nijam in CI day to day:
 
 - **10,000 test results included** each cycle.
-- Beyond that, **$0.002 per test** (that's **$20 per additional 10,000**, charged proportionally — 5,000
-  over = $10, 25,000 over = $50).
+- Beyond that, **$0.001 per test** (that's **$10 per additional 10,000**, charged proportionally — 5,000
+  over = $5, 25,000 over = $25).
 - **Pro never blocks.** Usage past the included amount is metered and billed in arrears on your next
   invoice, alongside the $20 base.
 - **Unlimited seats** and **90-day** retention.
+
+:::tip[Early-bird offer]
+The **$0.001 / test** metered rate is an early-bird price — **half** the standard **$0.002**. Register
+now as a Pro org and that half-price usage rate is locked in for **at least 2 years**. The $20 base is
+unchanged.
+:::
 
 See [Usage & billing cycles](/billing/usage/) for exactly how the meter and cycle work.
 

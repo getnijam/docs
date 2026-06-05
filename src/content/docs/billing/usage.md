@@ -36,22 +36,23 @@ pass and fail exactly as before; they just aren't recorded until the cycle rolls
 
 Pro includes **10,000 test results** per cycle. Past that:
 
-- Each additional test is metered at **$0.002**.
+- Each additional test is metered at **$0.001** — an early-bird rate, half the standard $0.002, locked
+  for at least 2 years for orgs that start Pro now.
 - Overage is billed **in arrears** — it appears on your **next** invoice, on top of the $20 base.
 - **Pro never blocks.** Uploads keep flowing no matter how far over you go.
 
 The Billing screen shows an **estimated charge this period**, computed from your current usage:
 
 ```
-estimate = $20 base + $0.002 × max(0, test_results − 10,000)
+estimate = $20 base + $0.001 × max(0, test_results − 10,000)
 ```
 
 | Test results this cycle | Estimated charge |
 | ----------------------- | ---------------- |
 | 8,000                   | $20.00           |
 | 10,000                  | $20.00           |
-| 15,000                  | $30.00           |
-| 35,000                  | $70.00           |
+| 15,000                  | $25.00           |
+| 35,000                  | $45.00           |
 
 :::note
 The on-screen figure is an **estimate** from Nijam's own counter. Your actual invoice is metered and
