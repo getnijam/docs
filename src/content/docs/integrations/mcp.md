@@ -41,7 +41,15 @@ Pick your agent below. In every case, replace `nij_rk_...` with the read key you
 ### Claude Code
 
 ```sh
-claude mcp add nijam -e NIJAM_API_KEY=nij_rk_... -- npx -y @nijam/mcp-server
+claude mcp add -s user nijam -e NIJAM_API_KEY=nij_rk_... -- npx -y @nijam/mcp-server
+```
+
+`-s user` registers Nijam across **all** your projects — the default scope only adds it to the
+current directory, so it won't show up elsewhere. After adding it, **start a new Claude Code
+session** so the tools load, then confirm:
+
+```sh
+claude mcp list   # → nijam: ✓ Connected
 ```
 
 ### Cursor
