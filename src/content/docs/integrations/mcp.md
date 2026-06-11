@@ -28,9 +28,8 @@ You need a Nijam **read key** (`nij_rk_…`). Read keys are a distinct, read-onl
 from the `nij_sk_…` [ingestion keys](/reporter/configuration/) your CI uses, so a leaked CI key can
 never expose data and a read key can never pollute it.
 
-1. Open **Secret keys** in your organization settings.
-2. In the **Read keys (MCP)** section, choose **Create key**.
-3. Copy the `nij_rk_…` token — it's shown once.
+1. Open **Secret keys** in your organization settings and switch to the **Read keys (MCP)** tab.
+2. Choose **Create key**, then copy the `nij_rk_…` token — it's shown once.
 
 Read keys are always **org-wide**, so the agent can resolve any project in the organization by name
 or slug on its own.
