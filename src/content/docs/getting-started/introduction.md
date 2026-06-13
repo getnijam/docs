@@ -43,7 +43,7 @@ Playwright / pytest / Vitest CI  ──(reporter)──▶  Nijam API  ──▶
 - **Run history** — every run stored with its commit, branch, PR, CI link, and git author.
 - **Flakiness scoring** — tests that pass and fail on the same code are detected and ranked.
 - **Failure detail** — the error log and the failing line for every framework; plus Playwright traces for
-  failed/timed-out tests, streamed straight to storage. (pytest and Vitest have no traces.)
+  failed/timed-out tests, streamed straight to storage.
 - **Inline source** — the test that produced a result, rendered alongside its run history.
 - **Environments** — tag each run (`staging`, `production`, …) and filter the dashboard by target.
 

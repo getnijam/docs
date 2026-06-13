@@ -9,12 +9,6 @@ Beyond results, the pytest plugin uploads the things that make the dashboard gen
 source** and the **error log and failing line** of each failure. Everything here is fail-soft and
 non-blocking.
 
-:::note
-pytest has **no traces, screenshots, or video** — there's no trace concept in pytest. For each failure you
-get the **error log** (the full traceback / longrepr) and the **failing line** instead. Test-source upload
-and error logs are the full picture here.
-:::
-
 ## Test source
 
 So the **test detail** page can render each test inline with its run history (instead of only linking out
@@ -43,8 +37,7 @@ With source off, the dashboard still links to the test at the run's commit via y
 ## Failure detail
 
 Each failure carries its **error log** — the full traceback / longrepr — and the **failing line**, so the
-test detail page tells you what broke without leaving Nijam. Since pytest produces no traces, screenshots,
-or video, this is how you investigate failures.
+test detail page tells you what broke without leaving Nijam.
 
 ## Flakiness
 

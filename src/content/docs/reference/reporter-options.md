@@ -36,7 +36,7 @@ interface NijamReporterOptions {
 ## pytest and Vitest equivalents
 
 The pytest and Vitest reporters take the **same options** as Playwright — only the naming and where you set
-them differ. (Traces don't apply to pytest or Vitest, so there's no trace option.)
+them differ.
 
 | Playwright option | pytest ini option     | Vitest constructor option |
 | ----------------- | --------------------- | ------------------------- |
@@ -62,7 +62,7 @@ them differ. (Traces don't apply to pytest or Vitest, so there's no trace option
 | Node engine         | >= 18 (Playwright/Vitest reporters)                                  |
 | Test source max size | 256 KB (larger files skipped)                                       |
 | Upload concurrency  | 4 (source and traces each)                                           |
-| Traces uploaded for | failed / timed-out tests only (**Playwright only**)                 |
+| Traces uploaded for | failed / timed-out tests only                                       |
 | License             | MIT                                                                  |
 
 ## Related

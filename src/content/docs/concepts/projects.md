@@ -30,8 +30,8 @@ upload, so that's the one you keep in CI secrets.
   [Runs & tests](/concepts/runs-and-tests/).
 - **Tests** — each test accumulates a history across runs, which powers
   [flakiness scoring](/concepts/flakiness/).
-- **Traces** — Playwright traces for failed/timed-out tests (Playwright only; pytest and Vitest store the
-  error log and failing line instead).
+- **Failure detail** — the error log and failing line for each failure, plus Playwright traces for
+  failed/timed-out tests.
 - **Test source** — the test files the run executed, so the test detail view renders inline (opt-out with
   [`uploadSource: false`](/reporter/playwright/source-and-traces/)).
 - **Environments** — an optional [tag](/reporter/playwright/environments/) per run (`staging`, `production`, …)

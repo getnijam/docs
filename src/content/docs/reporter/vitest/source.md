@@ -9,12 +9,6 @@ Beyond results, the Vitest reporter uploads the things that make the dashboard g
 **test source** and the **error log / stack and failing line** of each failure. Everything here is
 fail-soft and non-blocking.
 
-:::note
-Vitest has **no traces, screenshots, or video** — there's no trace concept in Vitest. For each failure you
-get the **error log / stack** and the **failing line** instead. Test-source upload and error logs are the
-full picture here.
-:::
-
 ## Test source
 
 So the **test detail** page can render each test inline with its run history (instead of only linking out
@@ -46,8 +40,7 @@ With source off, the dashboard still links to the test at the run's commit via y
 
 Each failure carries its **error log / stack** and the **failing line**, so the test detail page tells you
 what broke without leaving Nijam. Capturing the failing line requires `includeTaskLocation: true` in your
-Vitest config (see [Configuration](/reporter/vitest/configuration/)). Since Vitest produces no traces,
-screenshots, or video, this is how you investigate failures.
+Vitest config (see [Configuration](/reporter/vitest/configuration/)).
 
 ## Flakiness
 
