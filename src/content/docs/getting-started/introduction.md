@@ -20,9 +20,9 @@ real regression or just noise.
 
 Nijam has three pieces:
 
-1. **The reporter** — one per framework: [`@nijam/pw-reporter`](/reporter/installation/) for Playwright
-   (`playwright.config.ts`), [`pytest-nijam`](/reporter/installation/) for pytest, and
-   [`@nijam/vitest-reporter`](/reporter/installation/) for Vitest. After each run it ships the results
+1. **The reporter** — one per framework: [`@nijam/pw-reporter`](/reporter/playwright/installation/) for Playwright
+   (`playwright.config.ts`), [`pytest-nijam`](/reporter/playwright/installation/) for pytest, and
+   [`@nijam/vitest-reporter`](/reporter/playwright/installation/) for Vitest. After each run it ships the results
    (plus the failing line, error log, and test source — and traces, on Playwright) to the Nijam API. It's
    **fail-soft**: if Nijam is unreachable, it logs a `[nijam]` warning and gets out of the way — it will
    never break your CI.

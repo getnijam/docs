@@ -1,0 +1,86 @@
+---
+title: Installation
+description: Install the Nijam reporter for Playwright and wire it into playwright.config.ts.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+[`@nijam/pw-reporter`](https://www.npmjs.com/package/@nijam/pw-reporter) is the Nijam reporter for
+Playwright. It's open source, **fail-soft** (it never breaks your test run), and uploads each run to the
+Nijam ingestion API. It's zero-dependency and declares `@playwright/test` (>= 1.40) as a **peer
+dependency**, so it uses the Playwright you already have.
+
+<Aside type="note">
+The Playwright reporter captures run history, per-test status, the error log, the failing line, duration,
+and retries (for flakiness), plus optional test-source upload — and, unique to Playwright, **failure
+traces with screenshots and video**.
+</Aside>
+
+## Install
+
+<Tabs syncKey="pkg">
+<TabItem label="npm">
+
+```sh
+npm install --save-dev @nijam/pw-reporter
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```sh
+pnpm add -D @nijam/pw-reporter
+```
+
+</TabItem>
+<TabItem label="yarn">
+
+```sh
+yarn add -D @nijam/pw-reporter
+```
+
+</TabItem>
+<TabItem label="bun">
+
+```sh
+bun add -d @nijam/pw-reporter
+```
+
+</TabItem>
+</Tabs>
+
+## Configure
+
+Playwright's `reporter` field takes a list, so add Nijam alongside any reporters you already use:
+
+```ts title="playwright.config.ts" {6-9}
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  reporter: [
+    ['list'], // keep your existing reporters
+    ['@nijam/pw-reporter', {
+      apiKey: process.env.NIJAM_API_KEY,
+      projectId: '<your-project-uuid>',
+    }],
+  ],
+});
+```
+
+The two required options are `apiKey` and `projectId` — see [Configuration](/reporter/playwright/configuration/)
+for the full list and where to find them.
+
+<Aside type="tip">
+Put `NIJAM_API_KEY` in your CI secrets and reference it via the environment. Don't hard-code the key in the
+config file.
+</Aside>
+
+## Verify
+
+Run your suite. If Nijam is reachable and the credentials are valid, the run shows up in your project in
+the [dashboard](https://www.nijam.dev). If something's off (bad key, wrong project, network), the reporter
+prints a `[nijam]` warning and your tests still pass/fail exactly as before.
+
+Next: [Configuration →](/reporter/playwright/configuration/)

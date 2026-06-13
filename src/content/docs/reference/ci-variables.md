@@ -7,7 +7,7 @@ sidebar:
 
 The reporter auto-detects run metadata from CI environment variables, falling back to generic variables
 and then `git`. This page lists every variable it reads, per provider. For the narrative version, see
-[CI integration](/reporter/ci-integration/).
+[CI integration](/reporter/playwright/ci-integration/).
 
 ## Resolution order
 

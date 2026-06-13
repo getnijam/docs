@@ -5,18 +5,18 @@ template: splash
 hero:
   tagline: The missing dashboard for your test suite — run history, flakiness scoring, and failure analysis from every CI run. Think Sentry, for your tests. Ship the reporter, get it all — without touching your test code.
   image:
-    file: ../../assets/logo.svg
+    file: ../../assets/logo.png
   actions:
     - text: Get started
       link: /getting-started/quickstart/
       icon: right-arrow
     - text: Install the reporter
-      link: /reporter/installation/
+      link: /reporter/playwright/installation/
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid, LinkCard } from '@astrojs/starlight/components';
+import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## What is Nijam?
 
@@ -47,11 +47,14 @@ reporter; Nijam does the rest.
 
 ## Set it up with AI
 
-Using Cursor, Claude Code, Copilot, or any other AI coding assistant? Paste this prompt and it'll install
-and wire up the reporter for you — just swap in your project ID from the [dashboard](https://www.nijam.dev).
-The example below is for Playwright; for pytest or Vitest, see [Installation](/reporter/installation/).
+Using Cursor, Claude Code, Copilot, or any other AI coding assistant? Pick your framework, paste the prompt,
+and it'll install and wire up the reporter for you — just swap in your project ID from the
+[dashboard](https://www.nijam.dev).
 
-```text title="Prompt — add the Nijam reporter" collapse={2-23}
+<Tabs syncKey="framework">
+<TabItem label="Playwright">
+
+```text title="Prompt — add the Nijam Playwright reporter" collapse={2-23}
 Add the Nijam Playwright reporter (@nijam/pw-reporter) to this project.
 
 1. Install @nijam/pw-reporter as a dev dependency, using whichever package manager
@@ -74,17 +77,82 @@ Add the Nijam Playwright reporter (@nijam/pw-reporter) to this project.
    auto-detects commit, branch, PR, and CI metadata from the environment.
 
 Get YOUR_PROJECT_ID from my project in the Nijam dashboard: https://www.nijam.dev
-Reporter docs: https://docs.nijam.dev/reporter/configuration/
+Reporter docs: https://docs.nijam.dev/reporter/playwright/configuration/
 ```
 
-Prefer to wire it up by hand? The [reporter installation](/reporter/installation/) guide walks through the
+</TabItem>
+<TabItem label="pytest">
+
+```text title="Prompt — add the Nijam pytest plugin" collapse={2-21}
+Add the Nijam pytest plugin (pytest-nijam) to this project.
+
+1. Install pytest-nijam as a dev dependency, using whichever tool this repo already
+   uses (pip install pytest-nijam / poetry add --group dev pytest-nijam /
+   uv add --dev pytest-nijam).
+
+2. In pytest.ini (or [tool.pytest.ini_options] in pyproject.toml), set the project id:
+
+   [pytest]
+   nijam_project_id = YOUR_PROJECT_ID
+
+3. The plugin auto-loads — do NOT change any test code. Read the API key from the
+   NIJAM_API_KEY environment variable; remind me to set it as a CI secret and to add
+   it to my local environment for local runs.
+
+4. The plugin is fail-soft (it never breaks the test run) and auto-detects commit,
+   branch, PR, and CI metadata. pytest has no traces — it captures the error log and
+   the failing line.
+
+Get YOUR_PROJECT_ID from my project in the Nijam dashboard: https://www.nijam.dev
+Reporter docs: https://docs.nijam.dev/reporter/pytest/configuration/
+```
+
+</TabItem>
+<TabItem label="Vitest">
+
+```text title="Prompt — add the Nijam Vitest reporter" collapse={2-25}
+Add the Nijam Vitest reporter (@nijam/vitest-reporter) to this project.
+
+1. Install @nijam/vitest-reporter as a dev dependency, using whichever package manager
+   this repo already uses (npm i -D / yarn add -D / pnpm add -D).
+
+2. In vitest.config.ts, import the reporter and add it to test.reporters WITHOUT
+   removing existing reporters, and enable includeTaskLocation:
+
+   import NijamReporter from '@nijam/vitest-reporter';
+
+   export default defineConfig({
+     test: {
+       reporters: ['default', new NijamReporter({
+         apiKey: process.env.NIJAM_API_KEY,
+         projectId: 'YOUR_PROJECT_ID',
+       })],
+       includeTaskLocation: true,
+     },
+   });
+
+3. Read the API key from process.env.NIJAM_API_KEY — never hardcode it. Remind me to
+   set NIJAM_API_KEY as a CI secret, and to add it to .env.local for local runs.
+
+4. Do not change any test code. The reporter is fail-soft (it never breaks CI) and
+   auto-detects commit, branch, PR, and CI metadata. Vitest has no traces — it captures
+   the error log and the failing line.
+
+Get YOUR_PROJECT_ID from my project in the Nijam dashboard: https://www.nijam.dev
+Reporter docs: https://docs.nijam.dev/reporter/vitest/configuration/
+```
+
+</TabItem>
+</Tabs>
+
+Prefer to wire it up by hand? The [reporter installation](/reporter/playwright/installation/) guide walks through the
 same steps.
 
 ## Start here
 
 <CardGrid>
 	<LinkCard title="Quickstart" href="/getting-started/quickstart/" description="From sign-up to your first run in five minutes." />
-	<LinkCard title="Reporter configuration" href="/reporter/configuration/" description="Every option, with defaults and examples." />
-	<LinkCard title="CI integration" href="/reporter/ci-integration/" description="GitHub Actions, GitLab, CircleCI, Bitbucket — auto-detected." />
+	<LinkCard title="Reporter configuration" href="/reporter/playwright/configuration/" description="Every option, with defaults and examples." />
+	<LinkCard title="CI integration" href="/reporter/playwright/ci-integration/" description="GitHub Actions, GitLab, CircleCI, Bitbucket — auto-detected." />
 	<LinkCard title="Plans & pricing" href="/billing/plans/" description="Free and Pro, what's included, and how usage is billed." />
 </CardGrid>

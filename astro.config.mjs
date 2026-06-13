@@ -7,6 +7,15 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 export default defineConfig({
 	// Canonical URL — used for sitemap + social cards. Update if the docs host changes.
 	site: 'https://docs.nijam.dev',
+	// The reporter docs split from one flat section into per-framework sections.
+	// Keep the old flat URLs resolving by redirecting them to the Playwright pages.
+	redirects: {
+		'/reporter/installation/': '/reporter/playwright/installation/',
+		'/reporter/configuration/': '/reporter/playwright/configuration/',
+		'/reporter/ci-integration/': '/reporter/playwright/ci-integration/',
+		'/reporter/environments/': '/reporter/playwright/environments/',
+		'/reporter/source-and-traces/': '/reporter/playwright/source-and-traces/',
+	},
 	// Ensure GitHub-Flavored Markdown (tables, etc.) is applied to .mdx too — the MDX
 	// integration only enables GFM when this is set, so tables render in .mdx like in .md.
 	markdown: {
@@ -37,7 +46,9 @@ export default defineConfig({
 			sidebar: [
 				{ label: 'Getting Started', items: [{ autogenerate: { directory: 'getting-started' } }] },
 				{ label: 'Core Concepts', items: [{ autogenerate: { directory: 'concepts' } }] },
-				{ label: 'The Reporter', items: [{ autogenerate: { directory: 'reporter' } }] },
+						{ label: 'Playwright', items: [{ autogenerate: { directory: 'reporter/playwright' } }] },
+					{ label: 'pytest', items: [{ autogenerate: { directory: 'reporter/pytest' } }] },
+					{ label: 'Vitest', items: [{ autogenerate: { directory: 'reporter/vitest' } }] },
 				{ label: 'Integrations', items: [{ autogenerate: { directory: 'integrations' } }] },
 				{ label: 'Billing', items: [{ autogenerate: { directory: 'billing' } }] },
 				{ label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },

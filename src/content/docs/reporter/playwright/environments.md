@@ -1,18 +1,17 @@
 ---
 title: Environments
-description: Tag each run with its deploy target and filter the dashboard by it.
+description: Tag each Playwright run with its deploy target and filter the dashboard by it.
 sidebar:
   order: 4
 ---
 
-The `environment` option (pytest: `nijam_environment`) tags each run with the target it ran against — any
-string you like: `"staging"`, `"production"`, `"pr-preview"`, and so on. The dashboard then offers an
-**environment filter** so you can scope runs (and flakiness) to one target.
+The `environment` option tags each run with the target it ran against — any string you like: `"staging"`,
+`"production"`, `"pr-preview"`, and so on. The dashboard then offers an **environment filter** so you can
+scope runs (and flakiness) to one target.
 
 ## Setting it
 
-Most teams wire it to an env var so each pipeline reports its own target. The Playwright example below maps
-1:1 to Vitest's `environment` constructor option and pytest's `nijam_environment` ini option:
+Most teams wire it to an env var so each pipeline reports its own target:
 
 ```ts title="playwright.config.ts"
 reporter: [

@@ -1,0 +1,89 @@
+---
+title: Installation
+description: Install the Nijam reporter for Vitest and wire it into vitest.config.ts.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+[`@nijam/vitest-reporter`](https://www.npmjs.com/package/@nijam/vitest-reporter) is the Nijam reporter for
+Vitest. It's open source, **fail-soft** (it never breaks your test run), and uploads each run to the Nijam
+ingestion API. It declares `vitest` (>= 1.0) as a **peer dependency** and works on Vitest 1 through 4.
+
+<Aside type="note">
+The Vitest reporter captures run history, per-test status, the **error log / stack**, the **failing line**,
+duration, and retries (Vitest `retry`) for flakiness, plus optional test-source upload. Vitest has **no
+traces, screenshots, or video** — you get the error log and failing line for each failure instead.
+</Aside>
+
+## Install
+
+<Tabs syncKey="pkg">
+<TabItem label="npm">
+
+```sh
+npm install --save-dev @nijam/vitest-reporter
+```
+
+</TabItem>
+<TabItem label="pnpm">
+
+```sh
+pnpm add -D @nijam/vitest-reporter
+```
+
+</TabItem>
+<TabItem label="yarn">
+
+```sh
+yarn add -D @nijam/vitest-reporter
+```
+
+</TabItem>
+<TabItem label="bun">
+
+```sh
+bun add -d @nijam/vitest-reporter
+```
+
+</TabItem>
+</Tabs>
+
+## Configure
+
+Add it to `test.reporters` and enable `includeTaskLocation` so Nijam can capture the failing line:
+
+```ts title="vitest.config.ts" {2,6,7-10}
+import { defineConfig } from 'vitest/config';
+import NijamReporter from '@nijam/vitest-reporter';
+
+export default defineConfig({
+  test: {
+    includeTaskLocation: true, // required to capture the failing line
+    reporters: [
+      'default', // keep your existing reporters
+      new NijamReporter({
+        apiKey: process.env.NIJAM_API_KEY,
+        projectId: '<your-project-uuid>',
+      }),
+    ],
+  },
+});
+```
+
+The two required options are `apiKey` and `projectId` — see [Configuration](/reporter/vitest/configuration/)
+for the full list and where to find them.
+
+<Aside type="tip">
+Put `NIJAM_API_KEY` in your CI secrets and reference it via the environment. Don't hard-code the key in the
+config file.
+</Aside>
+
+## Verify
+
+Run your suite with `vitest run`. If Nijam is reachable and the credentials are valid, the run shows up in
+your project in the [dashboard](https://www.nijam.dev). If something's off (bad key, wrong project,
+network), the reporter prints a `[nijam]` warning and your tests still pass/fail exactly as before.
+
+Next: [Configuration →](/reporter/vitest/configuration/)

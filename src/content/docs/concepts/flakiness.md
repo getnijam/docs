@@ -38,5 +38,5 @@ Flakiness detection improves with history, so:
 - **Run on CI, not just locally** — consistent environment and metadata make the comparison meaningful.
 - **Keep retries on** — Playwright `retries`, Vitest `retry`, or pytest's `pytest-rerunfailures` give
   Nijam the within-run flip signal.
-- **Tag environments** — an [`environment`](/reporter/environments/) tag lets you tell apart "flaky
+- **Tag environments** — an [`environment`](/reporter/playwright/environments/) tag lets you tell apart "flaky
   everywhere" from "flaky only on one browser/`staging`".

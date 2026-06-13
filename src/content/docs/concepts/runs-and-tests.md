@@ -13,8 +13,8 @@ finishes, the reporter ships the run to Nijam with everything needed to place it
 - **Results** — every test that executed, with its status (passed, failed, timed out, skipped) and
   duration.
 - **Git & CI metadata** — commit, branch, PR number, CI run id, CI run URL, and the git author
-  (email + name). On supported CI providers these are [detected automatically](/reporter/ci-integration/).
-- **Environment** — the optional [`environment`](/reporter/environments/) tag, or **Unset** if you didn't
+  (email + name). On supported CI providers these are [detected automatically](/reporter/playwright/ci-integration/).
+- **Environment** — the optional [`environment`](/reporter/playwright/environments/) tag, or **Unset** if you didn't
   pass one.
 
 Runs are listed newest-first in the dashboard, and you can filter by branch, environment, and status.

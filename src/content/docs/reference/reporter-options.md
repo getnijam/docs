@@ -6,7 +6,7 @@ sidebar:
 ---
 
 The full option set for `@nijam/pw-reporter`, passed as the second element of the reporter tuple in
-`playwright.config.ts`. For guided setup, see [Configuration](/reporter/configuration/). The pytest and
+`playwright.config.ts`. For guided setup, see [Configuration](/reporter/playwright/configuration/). The pytest and
 Vitest reporters expose the [same options](#pytest-and-vitest-equivalents) under their own naming.
 
 ## Options (Playwright)
@@ -67,6 +67,6 @@ them differ. (Traces don't apply to pytest or Vitest, so there's no trace option
 
 ## Related
 
-- [Installation](/reporter/installation/)
-- [Configuration](/reporter/configuration/)
+- [Installation](/reporter/playwright/installation/)
+- [Configuration](/reporter/playwright/configuration/)
 - [CI variables](/reference/ci-variables/)

@@ -25,7 +25,7 @@ the agent asks for is returned to it as context.
 ## Prerequisites
 
 You need a Nijam **read key** (`nij_rk_…`). Read keys are a distinct, read-only credential — separate
-from the `nij_sk_…` [ingestion keys](/reporter/configuration/) your CI uses, so a leaked CI key can
+from the `nij_sk_…` [ingestion keys](/reporter/playwright/configuration/) your CI uses, so a leaked CI key can
 never expose data and a read key can never pollute it.
 
 1. Open **Secret keys** in your organization settings and switch to the **Read keys (MCP)** tab.

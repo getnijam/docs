@@ -1,0 +1,193 @@
+---
+title: CI integration
+description: Vitest run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket.
+sidebar:
+  order: 3
+---
+
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the Vitest reporter
+**detects them automatically** from your CI provider, so each `vitest run` lands in history with full
+context.
+
+<Aside type="tip">
+  The reporter prints the run's dashboard link to **stdout** — both when the run **starts** and when it
+  **finishes** — so it lands right in your **CI run logs** (and your terminal locally):
+
+```text
+[nijam] run started — view it at https://www.nijam.dev/...
+...
+[nijam] run finalized (12/14 passed) — view it at https://www.nijam.dev/...
+```
+
+  Most CI log viewers make the URL clickable — open it to jump straight from the build to the run in Nijam.
+  Set `silent: true` to suppress all `[nijam]` output.
+</Aside>
+
+## What's detected
+
+Commit, branch, PR number, **CI run id**, CI run URL, and the **git author** (email + name). Resolution
+order, per field:
+
+1. CI-specific environment variables (see below)
+2. Generic `GIT_*` / `BRANCH` / `COMMIT_SHA` variables
+3. A `git log` / `git rev-parse` shell-out
+4. Empty (branch is left unset → the dashboard shows "No Branch Info")
+
+<Aside type="note">
+  Author **email** isn't exposed by every provider. GitHub, CircleCI, and
+  Bitbucket don't surface a commit-author email, so the reporter falls back to
+  `git log -1` and then `git config user.email`.
+</Aside>
+
+## Supported providers
+
+<Tabs>
+<TabItem label="GitHub Actions">
+
+Detected from `GITHUB_SHA`, `GITHUB_REF_NAME`, `GITHUB_HEAD_REF`, `GITHUB_RUN_ID`,
+`GITHUB_REPOSITORY`, `GITHUB_SERVER_URL`.
+
+```yaml title=".github/workflows/tests.yml"
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx vitest run
+        env:
+          NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+```
+
+</TabItem>
+<TabItem label="GitLab CI">
+
+Detected from `CI_COMMIT_SHA`, `CI_COMMIT_REF_NAME`, `CI_PIPELINE_ID`, `CI_MERGE_REQUEST_IID`,
+`GITLAB_USER_EMAIL`, `GITLAB_USER_NAME`, `CI_COMMIT_AUTHOR`.
+
+```yaml title=".gitlab-ci.yml"
+tests:
+  image: node:22
+  script:
+    - npm ci
+    - npx vitest run
+  variables:
+    NIJAM_API_KEY: $NIJAM_API_KEY
+```
+
+</TabItem>
+<TabItem label="CircleCI">
+
+Detected from `CIRCLE_SHA1`, `CIRCLE_BRANCH`, `CIRCLE_BUILD_NUM`, `CIRCLE_PULL_REQUEST`,
+`CIRCLE_BUILD_URL`.
+
+```yaml title=".circleci/config.yml"
+jobs:
+  test:
+    docker: [{ image: cimg/node:22.0 }]
+    steps:
+      - checkout
+      - run: npm ci
+      - run: npx vitest run
+        environment:
+          NIJAM_API_KEY: $NIJAM_API_KEY
+```
+
+</TabItem>
+<TabItem label="Bitbucket">
+
+Detected from `BITBUCKET_COMMIT`, `BITBUCKET_BRANCH`, `BITBUCKET_PR_ID`, `BITBUCKET_BUILD_NUMBER`,
+`BITBUCKET_REPO_FULL_NAME`, `BITBUCKET_GIT_HTTP_ORIGIN`.
+
+```yaml title="bitbucket-pipelines.yml"
+pipelines:
+  default:
+    - step:
+        image: node:22
+        script:
+          - npm ci
+          - npx vitest run
+```
+
+</TabItem>
+</Tabs>
+
+## Splitting across jobs
+
+If you split your suite across several CI jobs (for example a job matrix by project or directory), they all
+**club into one Nijam run** when they share the CI run id, and a failure in any job flips that run to
+**Failing** right away. The dashboard shows **running / failing** live until the run completes.
+
+When each job runs a **different subset of tests**, there's no known total, so each job must _not_ finalize
+on its own. Set **`autoComplete: false`** in the `NijamReporter` constructor (or the
+**`NIJAM_AUTO_COMPLETE=false`** env var), then add **one post-matrix step** that calls
+`POST /v1/runs/complete` to mark the run done — passing the **CI run id the jobs shared** (`GITHUB_RUN_ID`,
+`CI_PIPELINE_ID`, …) so it targets the right run.
+
+```yaml title=".github/workflows/tests.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        project: [web, api, shared, utils] # one subset per job
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx vitest run --project ${{ matrix.project }}
+        env:
+          NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+          NIJAM_AUTO_COMPLETE: "false" # don't finalize per job
+
+  summary:
+    needs: [test] # after every project job
+    if: always() # complete even if some failed
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          curl -sf -X POST "https://api.nijam.dev/v1/runs/complete" \
+            -H "Authorization: Bearer ${{ secrets.NIJAM_API_KEY }}" \
+            -H "Content-Type: application/json" \
+            -d "{\"projectId\":\"<your-project-id>\",\"ciRunId\":\"$GITHUB_RUN_ID\",\"ciRunAttempt\":\"$GITHUB_RUN_ATTEMPT\"}"
+```
+
+<Aside type="caution">
+  As a safety net, Nijam auto-marks any run with **no activity for over an hour**
+  as **Canceled** — so a crashed job or a forgotten completion step never leaves
+  a run stuck on "Running".
+</Aside>
+
+A single `vitest run` needs none of this — it completes on its own.
+
+## Other CI systems
+
+On a provider not listed above, set the **generic** variables and the reporter picks them up:
+
+| Variable     | Maps to    |
+| ------------ | ---------- |
+| `COMMIT_SHA` | commit     |
+| `BRANCH`     | branch     |
+| `CI_RUN_ID`  | CI run id  |
+| `CI_URL`     | CI run URL |
+
+If none are set, the reporter still falls back to `git`, so local runs are attributed too. The full
+variable list lives in the [CI variables reference](/reference/ci-variables/).
+
+## What you need to push runs
+
+To send runs and reports to Nijam, the reporter needs **two** things — set both in `vitest.config.ts`:
+
+- **`projectId`** — which project to push to. Not a secret; it just identifies the project.
+- **`apiKey`** — the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via
+  the environment.
+
+Everything else — commit, branch, PR, CI link, author — is detected automatically.

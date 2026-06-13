@@ -1,0 +1,84 @@
+---
+title: Installation
+description: Install the Nijam pytest plugin and wire it into pytest.ini.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem, Aside } from '@astrojs/starlight/components';
+
+[`pytest-nijam`](https://pypi.org/project/pytest-nijam/) is the Nijam reporter for pytest. It's a pytest
+**plugin** — installing it is enough for pytest to auto-load it via the `pytest11` entry point, so there's
+**no code to add**. It's open source, **fail-soft** (it never breaks your test run), has zero runtime
+dependencies, and requires **Python >= 3.8**.
+
+<Aside type="note">
+The pytest reporter captures run history, per-test status, the **error log** (the full traceback /
+longrepr), the **failing line**, duration, and run stats, plus optional test-source upload. pytest has
+**no traces, screenshots, or video** — you get the error log and failing line for each failure instead.
+Flakiness detection relies on reruns from the
+[`pytest-rerunfailures`](https://pypi.org/project/pytest-rerunfailures/) plugin.
+</Aside>
+
+## Install
+
+<Tabs syncKey="pkg">
+<TabItem label="pip">
+
+```sh
+pip install pytest-nijam
+```
+
+</TabItem>
+<TabItem label="poetry">
+
+```sh
+poetry add --group dev pytest-nijam
+```
+
+</TabItem>
+<TabItem label="uv">
+
+```sh
+uv add --dev pytest-nijam
+```
+
+</TabItem>
+</Tabs>
+
+## Configure
+
+Configure it in `pytest.ini` under the `[pytest]` section (or in `[tool.pytest.ini_options]` in
+`pyproject.toml`), and set the API key as an environment variable:
+
+```ini title="pytest.ini"
+[pytest]
+nijam_project_id = <your-project-uuid>
+```
+
+```sh
+export NIJAM_API_KEY=...
+```
+
+If you keep config in `pyproject.toml` instead:
+
+```toml title="pyproject.toml"
+[tool.pytest.ini_options]
+nijam_project_id = "<your-project-uuid>"
+```
+
+The two required values are the API key (`NIJAM_API_KEY`) and `nijam_project_id` — see
+[Configuration](/reporter/pytest/configuration/) for the full list and where to find them.
+
+<Aside type="tip">
+Put `NIJAM_API_KEY` in your CI secrets and reference it via the environment. Don't hard-code the key in
+`pytest.ini`.
+</Aside>
+
+## Verify
+
+Run your suite with `pytest`. If Nijam is reachable and the credentials are valid, the run shows up in your
+project in the [dashboard](https://www.nijam.dev). If something's off (bad key, wrong project, network),
+the plugin prints a `[nijam]` warning and your tests still pass/fail exactly as before.
+
+Next: [Configuration →](/reporter/pytest/configuration/)

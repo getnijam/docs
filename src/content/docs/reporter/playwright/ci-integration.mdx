@@ -1,17 +1,14 @@
 ---
 title: CI integration
-description: Run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket.
+description: Run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket — plus Playwright sharding.
 sidebar:
   order: 3
 ---
 
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
-Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the reporter
-**detects them automatically** from your CI provider, so each run lands in history with full context. This
-applies to all three frameworks; the workflow examples below use Playwright, but pytest (`pytest`) and
-Vitest (`vitest run`) detect the same metadata. A few items — the `mcr.microsoft.com/playwright` Docker
-image and `--shard` auto-detection — are **Playwright-specific** and called out as such.
+Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the Playwright reporter
+**detects them automatically** from your CI provider, so each run lands in history with full context.
 
 <Aside type="tip">
   The reporter prints the run's dashboard link to **stdout** — both when the run **starts** and when it
@@ -121,17 +118,20 @@ pipelines:
 </TabItem>
 </Tabs>
 
+<Aside type="tip">
+  The official `mcr.microsoft.com/playwright` Docker image ships the browsers and system dependencies
+  preinstalled, so you can skip `npx playwright install --with-deps` when you use it.
+</Aside>
+
 ## Sharded runs
 
-Splitting a suite across CI jobs works for any framework, but `--shard` auto-detection below is
-**Playwright-specific**. When you split a suite across CI jobs, they all **club into one Nijam run** (they
-share the CI run id),
-and a failure in any job flips that run to **Failing** right away. The dashboard shows
-**running / failing** live until the run completes — and **how it completes depends on how you split**:
+Splitting a suite across CI jobs all **clubs into one Nijam run** (they share the CI run id), and a failure
+in any job flips that run to **Failing** right away. The dashboard shows **running / failing** live until
+the run completes — and **how it completes depends on how you split**:
 
-- **Playwright `--shard=i/N`** — auto-detected from `config.shard`. Each shard streams its results and
-  reports when it finishes; because Playwright knows the **total**, Nijam completes the run **once every
-  shard has reported**. Nothing to configure — **no extra step**.
+- **`--shard=i/N`** — auto-detected from `config.shard`. Each shard streams its results and reports when it
+  finishes; because Playwright knows the **total**, Nijam completes the run **once every shard has
+  reported**. Nothing to configure — **no extra step**.
 - **A matrix where each job runs different specs** (no `--shard` — e.g. one spec file per job) — there's
   **no known total**, so each job must _not_ finalize on its own. Set **`autoComplete: false`** in
   `playwright.config.ts` (or the **`NIJAM_AUTO_COMPLETE=false`** env var), then add **one post-matrix
@@ -144,7 +144,7 @@ and a failure in any job flips that run to **Failing** right away. The dashboard
 </Aside>
 
 <Tabs>
-<TabItem label="Playwright --shard">
+<TabItem label="--shard (auto)">
 
 Auto-detected — each shard self-reports and the run completes once all four are in. No `autoComplete`, no
 completion step.
@@ -249,8 +249,7 @@ variable list lives in the [CI variables reference](/reference/ci-variables/).
 
 ## What you need to push runs
 
-To send runs and reports to Nijam, the reporter needs **two** things — set both in your framework's config
-(`playwright.config.ts`, `pytest.ini`, or `vitest.config.ts`):
+To send runs and reports to Nijam, the reporter needs **two** things — set both in `playwright.config.ts`:
 
 - **`projectId`** — which project to push to. Not a secret; it just identifies the project.
 - **`apiKey`** — the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via

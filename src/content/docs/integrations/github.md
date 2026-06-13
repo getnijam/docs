@@ -51,7 +51,7 @@ new one added.
 ## Requirements
 
 GitHub posting only kicks in when a run carries **pull-request context** — the PR number and the
-`owner/repo`. The [`@nijam/pw-reporter`](/reporter/installation/) detects both automatically from your
+`owner/repo`. The [`@nijam/pw-reporter`](/reporter/playwright/installation/) detects both automatically from your
 CI environment (e.g. GitHub Actions `pull_request` / `pull_request_target` events), so no extra
 configuration is needed beyond installing the App. Runs without PR context (a plain push to `main`,
 say) still get a status check on their commit if checks are enabled, but no comment.
