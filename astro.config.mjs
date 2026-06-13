@@ -16,7 +16,7 @@ export default defineConfig({
 		starlight({
 			title: 'Nijam Docs',
 			description:
-				'Documentation for Nijam — test analytics for Playwright. Run history, flakiness scoring, and trace storage.',
+				'Documentation for Nijam — test analytics for Playwright, pytest, and Vitest. Run history, flakiness scoring, and failure analysis.',
 			logo: {
 				src: './src/assets/logo.svg',
 				alt: 'Nijam',

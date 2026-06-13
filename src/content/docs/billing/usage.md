@@ -29,7 +29,7 @@ effect. See [Roles and permissions](/concepts/organizations/#roles-and-permissio
 ## Free: the hard cap
 
 When a Free org reaches **1,000 test results** in a cycle, further uploads are **blocked** until the next
-reset. A banner in the dashboard tells you you've hit the cap. Your Playwright runs are unaffected — they
+reset. A banner in the dashboard tells you you've hit the cap. Your test runs are unaffected — they
 pass and fail exactly as before; they just aren't recorded until the cycle rolls over (or you upgrade).
 
 ## Pro: included + metered overage

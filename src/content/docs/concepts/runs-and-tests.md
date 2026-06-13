@@ -1,14 +1,14 @@
 ---
 title: Runs & tests
-description: How a Playwright run maps to Nijam, and what counts toward your usage.
+description: How a test run maps to Nijam, and what counts toward your usage.
 sidebar:
   order: 3
 ---
 
 ## Runs
 
-A **run** is one invocation of `playwright test`. When the suite finishes, the reporter ships the run to
-Nijam with everything needed to place it in history:
+A **run** is one test-run invocation (e.g. `playwright test`, `pytest`, or `vitest run`). When the suite
+finishes, the reporter ships the run to Nijam with everything needed to place it in history:
 
 - **Results** — every test that executed, with its status (passed, failed, timed out, skipped) and
   duration.
@@ -24,12 +24,14 @@ Runs are listed newest-first in the dashboard, and you can filter by branch, env
 Within a run, each test is a **test result**. Across runs, results for the same test accumulate into that
 test's **history** — the timeline that tells you whether a failure is new, recurring, or
 [flaky](/concepts/flakiness/). The test detail page shows that history alongside the test's source and its
-latest trace.
+latest failure detail (and trace, on Playwright).
 
 ## Retries
 
-Playwright retries are reported as part of the run. A test that fails then passes on retry is recorded as
-such — which is exactly the signal Nijam uses to flag flakiness.
+Retries are reported as part of the run. A test that fails then passes on retry is recorded as such — which
+is exactly the signal Nijam uses to flag flakiness. Each framework has its own retry mechanism: Playwright
+`retries`, Vitest `retry`, and pytest via the [`pytest-rerunfailures`](https://pypi.org/project/pytest-rerunfailures/)
+plugin.
 
 ## What counts toward usage
 

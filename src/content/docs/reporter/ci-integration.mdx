@@ -8,7 +8,10 @@ sidebar:
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
 Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the reporter
-**detects them automatically** from your CI provider, so each run lands in history with full context.
+**detects them automatically** from your CI provider, so each run lands in history with full context. This
+applies to all three frameworks; the workflow examples below use Playwright, but pytest (`pytest`) and
+Vitest (`vitest run`) detect the same metadata. A few items — the `mcr.microsoft.com/playwright` Docker
+image and `--shard` auto-detection — are **Playwright-specific** and called out as such.
 
 <Aside type="tip">
   The reporter prints the run's dashboard link to **stdout** — both when the run **starts** and when it
@@ -120,7 +123,9 @@ pipelines:
 
 ## Sharded runs
 
-When you split a suite across CI jobs, they all **club into one Nijam run** (they share the CI run id),
+Splitting a suite across CI jobs works for any framework, but `--shard` auto-detection below is
+**Playwright-specific**. When you split a suite across CI jobs, they all **club into one Nijam run** (they
+share the CI run id),
 and a failure in any job flips that run to **Failing** right away. The dashboard shows
 **running / failing** live until the run completes — and **how it completes depends on how you split**:
 
@@ -244,11 +249,11 @@ variable list lives in the [CI variables reference](/reference/ci-variables/).
 
 ## What you need to push runs
 
-To send runs and reports to Nijam, the reporter needs **two** things — set both in
-`playwright.config.ts`:
+To send runs and reports to Nijam, the reporter needs **two** things — set both in your framework's config
+(`playwright.config.ts`, `pytest.ini`, or `vitest.config.ts`):
 
 - **`projectId`** — which project to push to. Not a secret; it just identifies the project.
 - **`apiKey`** — the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via
-  `process.env.NIJAM_API_KEY`.
+  the environment.
 
 Everything else — commit, branch, PR, CI link, author — is detected automatically.

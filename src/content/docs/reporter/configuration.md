@@ -1,12 +1,15 @@
 ---
 title: Configuration
-description: Every @nijam/pw-reporter option, with defaults and examples.
+description: Every Nijam reporter option, with defaults and examples.
 sidebar:
   order: 2
 ---
 
-The reporter is configured inline in `playwright.config.ts`. Only `apiKey` and `projectId` are required;
-everything else has a sensible default.
+The examples here use the Playwright reporter, configured inline in `playwright.config.ts`. Only `apiKey`
+and `projectId` are required; everything else has a sensible default. The pytest reporter (`pytest.ini`
+ini options) and Vitest reporter (`NijamReporter` constructor) accept the **same options** under their own
+naming — see [Installation](/reporter/installation/) and the
+[reporter options reference](/reference/reporter-options/#pytest-and-vitest-equivalents).
 
 ## Minimal
 

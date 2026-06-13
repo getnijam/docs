@@ -1,6 +1,6 @@
 ---
 title: MCP server
-description: Let AI agents query your Playwright runs, failures, and flakiness through the Model Context Protocol.
+description: Let AI agents query your test runs, failures, and flakiness through the Model Context Protocol.
 sidebar:
   order: 3
 ---
@@ -116,7 +116,8 @@ can see; every other tool accepts a project **id, slug, or name**, so you never 
 | `get_test_history` | One test across the last 30 runs — spot when it broke |
 | `list_flaky_tests` | The flakiest tests in a project, ranked |
 
-Trace artifacts come back as short-lived signed links the agent can open, minted on demand.
+Where a run has artifacts (Playwright traces), they come back as short-lived signed links the agent can
+open, minted on demand.
 
 ## Security
 
