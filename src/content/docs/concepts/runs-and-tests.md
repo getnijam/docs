@@ -35,12 +35,13 @@ plugin.
 
 ## What counts toward usage
 
-Your plan's allowance is measured in **test results** — i.e. individual test executions stored, summed
-across all runs in a billing cycle. A run with 200 tests contributes 200 toward your cycle; retries that
-store an additional result count too.
+Your plan's allowance is measured in **credits**, summed across all runs in a billing cycle. Credits are
+framework-weighted: **1 credit = 1 Playwright test = 100 pytest/Vitest tests**. A Playwright run with 200
+tests contributes 200 credits; the same number of pytest/Vitest tests contributes 2. Retries that store
+an additional result count too.
 
-- **Free** caps at **1,000 test results per cycle** and blocks further uploads once reached.
-- **Pro** includes **10,000 per cycle**, then bills overage per test — it never blocks.
+- **Free** caps at **1,000 credits per cycle** and blocks further uploads once reached.
+- **Pro** includes **10,000 per cycle**, then bills overage per credit — it never blocks.
 
 See [Usage & billing cycles](/billing/usage/) for the details.
 
