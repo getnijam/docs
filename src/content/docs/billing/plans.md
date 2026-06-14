@@ -8,8 +8,12 @@ sidebar:
 Nijam has two plans, billed **per organization**. The free plan is a real, usable tier; Pro lifts the caps
 and meters usage beyond a generous included allowance.
 
-Usage is measured in **credits**: **1 credit = 1 Playwright test = 100 pytest/Vitest tests**. Credits are
-framework-weighted because pytest/Vitest suites produce far more (and cheaper) tests than Playwright E2E.
+Usage is measured in **credits**, which are framework-weighted because pytest/Vitest suites produce far
+more (and cheaper) tests than Playwright E2E:
+
+- 1 credit = 1 Playwright test report
+- 1 credit = 100 pytest test reports
+- 1 credit = 100 Vitest test reports
 
 ## At a glance
 
