@@ -48,7 +48,7 @@ An organization must always have at least one admin — you can't remove or demo
 
 Each member counts as one **seat**. Your plan sets the seat limit:
 
-- **Free** — up to **2 seats**.
+- **Free** — up to **3 seats**.
 - **Pro** — **unlimited seats**.
 
 See [Plans](/billing/plans/) for the full comparison.

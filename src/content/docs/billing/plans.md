@@ -17,7 +17,7 @@ framework-weighted because pytest/Vitest suites produce far more (and cheaper) t
 | ---------------------- | ----------------------------- | ------------------------------------------------------- |
 | Credits / cycle        | **1,000** (hard cap, blocks)  | **10,000 included**, then **$0.001 / credit**, no block |
 | Overage                | —                             | Metered, billed in arrears on your next invoice         |
-| Seats (members)        | **2**                         | **Unlimited**                                           |
+| Seats (members)        | **3**                         | **Unlimited**                                           |
 | Trace & run retention  | **7 days**                    | **90 days**                                             |
 | Billing cycle          | Org anniversary               | Your subscription's billing period                      |
 
@@ -31,7 +31,7 @@ Everything you need to evaluate Nijam on a real suite:
 - Up to **1,000 credits per cycle** (e.g. 1,000 Playwright tests, or up to 100,000 pytest/Vitest tests).
   When you hit the cap, further uploads are **blocked** until the cycle resets — your tests still run and
   pass/fail normally; they just aren't recorded until reset.
-- **2 seats** and **7-day** retention.
+- **3 seats** and **7-day** retention.
 
 ## Pro — $20/mo
 
