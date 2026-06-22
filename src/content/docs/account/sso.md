@@ -34,6 +34,11 @@ and an email domain only routes to your provider once you've **DNS-verified** th
 
 ## 1. Create an OIDC app in your provider
 
+:::tip
+Using **Okta**? Follow the [step-by-step Okta guide](/account/sso-okta/) instead — it covers the exact
+screens plus Okta-specific gotchas (issuer URL, Federation Broker Mode, the dashboard chiclet).
+:::
+
 Create a **web application** — a confidential, server-side client that gets a **client secret** (not a
 SPA or native app). Configure it with:
 
