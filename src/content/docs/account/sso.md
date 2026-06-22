@@ -87,6 +87,14 @@ their provider identity linked.
 Turn JIT off to require that users already be members — they must be [invited](/concepts/organizations/)
 the normal way before they can sign in via SSO.
 
+:::note
+With JIT on, your identity provider is effectively the source of truth for membership: removing a member
+in Nijam while they're still active in your IdP will **re-add them** on their next sign-in. To revoke
+someone's access for good, deprovision them in your identity provider (or remove the domain / disable
+SSO). Signing in via SSO authenticates a person's Nijam account but never grants access to organizations
+they aren't a member of — so removing someone from one org never affects their access to others.
+:::
+
 ## Require SSO (enforcement)
 
 Turn on **Require SSO** to make single sign-on the only way in for your domains. While it's enabled,
@@ -95,6 +103,14 @@ for any user whose email is on a verified domain, Nijam blocks:
 - password sign-in,
 - social sign-in (Google / GitHub),
 - creating a new account with a password.
+
+:::note
+Enforcing SSO **claims your verified domains.** Everyone with one of those emails signs in through your
+identity provider across **all of Nijam** — so if someone uses their work email in another organization
+too, that login also goes through your IdP, and deprovisioning them in your IdP removes their Nijam
+access everywhere. In other words, a work email is a corporate identity your organization controls. A
+domain can only be claimed by one organization.
+:::
 
 :::caution
 **Test SSO end-to-end before you enforce it.** Enforced users can't fall back to a password, so a
