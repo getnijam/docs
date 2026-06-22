@@ -105,9 +105,14 @@ off) or removing the domain immediately restores password login.
 
 ## Signing in
 
-Tell your team to sign in at the normal login page and enter their **work email**. If the domain has
-SSO, they're redirected to your provider and back, signed in — no password prompt. Returning users keep
-the same Nijam account (matched by email); their provider identity is linked on the first SSO login.
+Tell your team to sign in at the normal login page and enter their **work email**.
+
+- If you've **enforced** SSO, they're sent straight to your identity provider — no password prompt.
+- If SSO is **optional**, the next screen offers **Continue with SSO** alongside the password field,
+  so members who have a Nijam password can still use it.
+
+Returning users keep the same Nijam account (matched by email); their provider identity is linked on
+the first SSO login.
 
 ## Disabling SSO
 
