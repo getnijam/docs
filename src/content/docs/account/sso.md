@@ -130,6 +130,23 @@ Tell your team to sign in at the normal login page and enter their **work email*
 Returning users keep the same Nijam account (matched by email); their provider identity is linked on
 the first SSO login.
 
+## Add Nijam to your provider's dashboard
+
+You can also let people launch Nijam straight from their Okta dashboard, Microsoft **My Apps**, or
+Google launcher — without starting at the Nijam login page. Each connection has a **launch link** (shown
+under **Org settings → Single sign-on**). Add it to your provider's app tile; a click sends the user to
+your identity provider (where they already have a session) and bounces them back into Nijam, signed in.
+
+| Provider | Where to add the launch link |
+| --- | --- |
+| **Okta** | Your app → **General → Initiate login URI**, and set **Application visibility** to show the icon (upload the Nijam logo so the chiclet looks right). |
+| **Microsoft Entra ID** | The enterprise app → **Home page URL**; assign users/groups and make it visible — it then appears in **My Apps** and the Microsoft 365 app launcher. |
+| **Google Workspace** | Admin console → add a **custom link** to the app launcher pointing at the launch link. |
+| **Anything else** | Use it as a bookmark or an internal "Sign in to Nijam" link. |
+
+The launch link contains the connection id, not a secret — it only says *which* provider to use; the
+user still has to authenticate with your identity provider.
+
 ## Disabling SSO
 
 - Toggle **Enabled** off to keep the configuration but stop SSO logins (this also lifts enforcement).
