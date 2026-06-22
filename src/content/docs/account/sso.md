@@ -55,9 +55,10 @@ SPA or native app). Configure it with:
 Then copy the **Issuer URL**, **Client ID**, and **Client secret**.
 
 :::note
-Your **Issuer URL** is your provider's base URL — for Okta it looks like
-`https://your-company.okta.com` (not the `-admin` console URL). You can confirm it by opening
-`https://your-company.okta.com/.well-known/openid-configuration` in a browser; it should return JSON.
+Your **Issuer URL** is your provider's base URL — for Okta it's your org domain like
+`https://dev-123456.okta.com` (find it under your username in the Okta admin console; see the
+[Okta guide](/account/sso-okta/)). Confirm any issuer by opening its
+`/.well-known/openid-configuration` in a browser; it should return JSON.
 :::
 
 ## 2. Configure SSO in Nijam

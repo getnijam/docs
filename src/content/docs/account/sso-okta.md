@@ -35,20 +35,12 @@ In the **Okta Admin Console**: **Applications → Create App Integration**.
 
 ## 2. Find your Issuer URL
 
-Your issuer is your Okta **org base URL**, *not* the admin console.
+Your issuer is your Okta **org domain**. The easiest way to find it: in the Okta Admin Console, click
+your **username in the top-right corner** — your domain (e.g. `https://dev-123456.okta.com`) is listed
+in the dropdown. Paste that as the **Issuer URL**.
 
-:::caution
-The admin URL looks like `https://integrator-2501135-admin.okta.com/admin`. Strip the **`-admin`** and
-the **`/admin`** path to get the issuer:
-
-```
-https://integrator-2501135.okta.com
-```
-
-Confirm it by opening `https://integrator-2501135.okta.com/.well-known/openid-configuration` — it should
-return JSON. A wrong issuer is the most common cause of a "we couldn't reach that identity provider"
-error.
-:::
+Confirm it by opening `https://dev-123456.okta.com/.well-known/openid-configuration` — it should return
+JSON. A wrong issuer is the most common cause of a "we couldn't reach that identity provider" error.
 
 ## 3. Connect it in Nijam
 
@@ -93,10 +85,9 @@ To let people launch Nijam from their Okta dashboard, point Okta's **Initiate lo
 3. Optionally upload the Nijam logo so the chiclet looks right.
 
 :::caution
-The **Initiate login URI must be HTTPS** and reachable from the user's browser. Okta rejects
-`http://localhost`, so the dashboard chiclet only works against **deployed Nijam**
-(`https://api.nijam.dev/...`), not a local dev server. Use the launch link exactly as shown on the
-production settings page.
+The **Initiate login URI must be HTTPS** and reachable from the user's browser. Use the launch link
+exactly as shown on Nijam's SSO settings page
+(`https://api.nijam.dev/v1/auth/sso/launch/<connection-id>`).
 :::
 
 Assigned users now see a **Nijam** tile on their Okta dashboard. Clicking it sends them through your
@@ -110,5 +101,5 @@ Initiate login URI → Okta → back into Nijam, signed in.
 | Clicking the chiclet shows a `NOT_FOUND` JSON error | The launch link points at an API build that doesn't have the route yet — redeploy your API, then retry. |
 | "We couldn't reach that identity provider" | Wrong issuer URL — you likely used the `-admin` console URL. Use the org base URL and confirm its `/.well-known/openid-configuration` loads. |
 | A redirect/`redirect_uri` mismatch at Okta | The **Sign-in redirect URI** in Okta must exactly match Nijam's (`https://api.nijam.dev/v1/auth/sso/callback`). |
-| Okta rejects the Initiate login URI | It must be **HTTPS** (and a real, reachable host) — not `http://localhost`. |
+| Okta rejects the Initiate login URI | It must be **HTTPS** and a real, reachable host. Use the production launch link from Nijam's SSO settings. |
 | Enforced user can't sign in at all | Okta is unavailable or they're unassigned. An admin can lift **Require SSO** / **Enabled** in Nijam to restore password login. |
