@@ -5,7 +5,7 @@ sidebar:
   order: 2
 ---
 
-A **project** is a single test suite tracked by Nijam — Playwright, pytest, or Vitest — usually one per
+A **project** is a single test suite tracked by Nijam - Playwright, pytest, or Vitest - usually one per
 repository. It owns the runs, tests, artifacts, and history for that suite. An
 [organization](/concepts/organizations/) can hold as many projects as you need.
 
@@ -21,20 +21,20 @@ Every project has a stable **Project ID** (a UUID) shown in its settings. The
 }]
 ```
 
-The Project ID isn't a secret — it identifies *where* runs go. The **API key** is what authorizes the
+The Project ID isn't a secret - it identifies *where* runs go. The **API key** is what authorizes the
 upload, so that's the one you keep in CI secrets.
 
 ## What a project tracks
 
-- **Runs** — one per test-run invocation (e.g. `playwright test`, `pytest`, `vitest run`). See
+- **Runs** - one per test-run invocation (e.g. `playwright test`, `pytest`, `vitest run`). See
   [Runs & tests](/concepts/runs-and-tests/).
-- **Tests** — each test accumulates a history across runs, which powers
+- **Tests** - each test accumulates a history across runs, which powers
   [flakiness scoring](/concepts/flakiness/).
-- **Failure detail** — the error log and failing line for each failure, plus Playwright traces for
+- **Failure detail** - the error log and failing line for each failure, plus Playwright traces for
   failed/timed-out tests.
-- **Test source** — the test files the run executed, so the test detail view renders inline (opt-out with
+- **Test source** - the test files the run executed, so the test detail view renders inline (opt-out with
   [`uploadSource: false`](/reporter/playwright/source-and-traces/)).
-- **Environments** — an optional [tag](/reporter/playwright/environments/) per run (`staging`, `production`, …)
+- **Environments** - an optional [tag](/reporter/playwright/environments/) per run (`staging`, `production`, …)
   you can filter by.
 
 ## One project or many?
@@ -45,6 +45,6 @@ want to track separately, give each its own project (and its own `projectId`).
 ## Deleting a project
 
 An **admin** can delete a project from its **Settings → Danger zone** (you confirm by typing the project's
-name). This permanently removes the project and **everything in it** — every run, test result, and stored
-artifact (traces, screenshots, videos) — and can't be undone. Deleting individual **runs** is also
+name). This permanently removes the project and **everything in it** - every run, test result, and stored
+artifact (traces, screenshots, videos) - and can't be undone. Deleting individual **runs** is also
 admin-only; see [Runs & tests](/concepts/runs-and-tests/#deleting-a-run).

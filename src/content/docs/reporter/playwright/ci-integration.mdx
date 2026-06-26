@@ -1,26 +1,26 @@
 ---
 title: CI integration
-description: Run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket — plus Playwright sharding.
+description: Run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket - plus Playwright sharding.
 sidebar:
   order: 3
 ---
 
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
-Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the Playwright reporter
+Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand - the Playwright reporter
 **detects them automatically** from your CI provider, so each run lands in history with full context.
 
 <Aside type="tip">
-  The reporter prints the run's dashboard link to **stdout** — both when the run **starts** and when it
-  **finishes** — so it lands right in your **CI run logs** (and your terminal locally):
+  The reporter prints the run's dashboard link to **stdout** - both when the run **starts** and when it
+  **finishes** - so it lands right in your **CI run logs** (and your terminal locally):
 
 ```text
-[nijam] run started — view it at https://www.nijam.dev/...
+[nijam] run started - view it at https://www.nijam.dev/...
 ...
-[nijam] run finalized (12/14 passed) — view it at https://www.nijam.dev/...
+[nijam] run finalized (12/14 passed) - view it at https://www.nijam.dev/...
 ```
 
-  Most CI log viewers make the URL clickable — open it to jump straight from the build to the run in Nijam.
+  Most CI log viewers make the URL clickable - open it to jump straight from the build to the run in Nijam.
   Set `silent: true` to suppress all `[nijam]` output.
 </Aside>
 
@@ -127,26 +127,26 @@ pipelines:
 
 Splitting a suite across CI jobs all **clubs into one Nijam run** (they share the CI run id), and a failure
 in any job flips that run to **Failing** right away. The dashboard shows **running / failing** live until
-the run completes — and **how it completes depends on how you split**:
+the run completes - and **how it completes depends on how you split**:
 
-- **`--shard=i/N`** — auto-detected from `config.shard`. Each shard streams its results and reports when it
+- **`--shard=i/N`** - auto-detected from `config.shard`. Each shard streams its results and reports when it
   finishes; because Playwright knows the **total**, Nijam completes the run **once every shard has
-  reported**. Nothing to configure — **no extra step**.
-- **A matrix where each job runs different specs** (no `--shard` — e.g. one spec file per job) — there's
+  reported**. Nothing to configure - **no extra step**.
+- **A matrix where each job runs different specs** (no `--shard` - e.g. one spec file per job) - there's
   **no known total**, so each job must _not_ finalize on its own. Set **`autoComplete: false`** in
   `playwright.config.ts` (or the **`NIJAM_AUTO_COMPLETE=false`** env var), then add **one post-matrix
   step** that calls `POST /v1/runs/complete` to mark the run done.
 
 <Aside type="caution">
   As a safety net, Nijam auto-marks any run with **no activity for over an hour**
-  as **Canceled** — so a crashed shard or a forgotten completion step never leaves
+  as **Canceled** - so a crashed shard or a forgotten completion step never leaves
   a run stuck on "Running".
 </Aside>
 
 <Tabs>
 <TabItem label="--shard (auto)">
 
-Auto-detected — each shard self-reports and the run completes once all four are in. No `autoComplete`, no
+Auto-detected - each shard self-reports and the run completes once all four are in. No `autoComplete`, no
 completion step.
 
 ```yaml title=".github/workflows/e2e.yml"
@@ -172,7 +172,7 @@ jobs:
 <TabItem label="Spec-per-job matrix">
 
 Each job runs a different spec, so the total isn't known: `NIJAM_AUTO_COMPLETE=false` stops every job
-finalizing, and a final `summary` job completes the run once — pass the **CI run id the jobs shared**
+finalizing, and a final `summary` job completes the run once - pass the **CI run id the jobs shared**
 (`GITHUB_RUN_ID`) so it targets the right run.
 
 ```yaml title=".github/workflows/e2e.yml"
@@ -209,7 +209,7 @@ jobs:
 </TabItem>
 <TabItem label="GitLab CI">
 
-`parallel` + `--shard` is auto-detected, same as GitHub — no completion step. (For a spec-per-job matrix on
+`parallel` + `--shard` is auto-detected, same as GitHub - no completion step. (For a spec-per-job matrix on
 GitLab, set `NIJAM_AUTO_COMPLETE=false` and add a `needs: [e2e]` job that POSTs to `/v1/runs/complete` with
 `ciRunId=$CI_PIPELINE_ID`.)
 
@@ -228,9 +228,9 @@ e2e:
 </Tabs>
 
 Only the **spec-per-job** case calls `/v1/runs/complete`, and its **`ciRunId` must equal the value the jobs
-sent** — the same one the reporter detects (`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …), shared across every job
+sent** - the same one the reporter detects (`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …), shared across every job
 in the run. On providers whose CI run id is _job-level_ (e.g. CircleCI's `CIRCLE_BUILD_NUM`), pass the
-shared workflow id through to the final step instead. Single-job and `--shard` runs need none of this —
+shared workflow id through to the final step instead. Single-job and `--shard` runs need none of this -
 they complete on their own.
 
 ## Other CI systems
@@ -249,10 +249,10 @@ variable list lives in the [CI variables reference](/reference/ci-variables/).
 
 ## What you need to push runs
 
-To send runs and reports to Nijam, the reporter needs **two** things — set both in `playwright.config.ts`:
+To send runs and reports to Nijam, the reporter needs **two** things - set both in `playwright.config.ts`:
 
-- **`projectId`** — which project to push to. Not a secret; it just identifies the project.
-- **`apiKey`** — the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via
+- **`projectId`** - which project to push to. Not a secret; it just identifies the project.
+- **`apiKey`** - the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via
   the environment.
 
-Everything else — commit, branch, PR, CI link, author — is detected automatically.
+Everything else - commit, branch, PR, CI link, author - is detected automatically.

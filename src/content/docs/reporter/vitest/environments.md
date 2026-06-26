@@ -5,7 +5,7 @@ sidebar:
   order: 4
 ---
 
-The `environment` constructor option tags each run with the target it ran against — any string you like:
+The `environment` constructor option tags each run with the target it ran against - any string you like:
 `"staging"`, `"production"`, `"pr-preview"`, and so on. The dashboard then offers an **environment filter**
 so you can scope runs (and flakiness) to one target.
 
@@ -21,16 +21,16 @@ new NijamReporter({
 });
 ```
 
-It's free-form — Nijam doesn't validate it against a fixed set. Pick a convention and stick to it so the
+It's free-form - Nijam doesn't validate it against a fixed set. Pick a convention and stick to it so the
 filter stays tidy.
 
 ## Unset runs
 
 Runs reported **without** an `environment` are grouped under **Unset** in the dashboard. That's a feature,
-not an error — you can always tell which runs carried no environment info, and filter them out.
+not an error - you can always tell which runs carried no environment info, and filter them out.
 
 ## Why it matters for flakiness
 
 A test that's "flaky everywhere" and one that's "flaky only on `staging`" are different problems. Tagging
-environments lets Nijam — and you — separate the two when reading a test's history. See
+environments lets Nijam - and you - separate the two when reading a test's history. See
 [Flakiness](/concepts/flakiness/).

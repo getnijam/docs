@@ -5,7 +5,7 @@
 	--sl-font: 'DM Sans Variable', sans-serif;
 }
 
-/* Nijam brand accent — teal, derived from the logo gradient (#007595 → #0073b6). */
+/* Nijam brand accent - teal, derived from the logo gradient (#007595 → #0073b6). */
 :root {
 	--sl-color-accent-low: #002c3a;
 	--sl-color-accent: #0a7ba8;

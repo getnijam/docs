@@ -7,21 +7,21 @@ sidebar:
 
 import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
 
-Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand — the pytest plugin
+Nijam is built to run in CI. You don't pass commit, branch, PR, or author by hand - the pytest plugin
 **detects them automatically** from your CI provider, so each `pytest` run lands in history with full
 context.
 
 <Aside type="tip">
-  The plugin prints the run's dashboard link to **stdout** — both when the run **starts** and when it
-  **finishes** — so it lands right in your **CI run logs** (and your terminal locally):
+  The plugin prints the run's dashboard link to **stdout** - both when the run **starts** and when it
+  **finishes** - so it lands right in your **CI run logs** (and your terminal locally):
 
 ```text
-[nijam] run started — view it at https://www.nijam.dev/...
+[nijam] run started - view it at https://www.nijam.dev/...
 ...
-[nijam] run finalized (12/14 passed) — view it at https://www.nijam.dev/...
+[nijam] run finalized (12/14 passed) - view it at https://www.nijam.dev/...
 ```
 
-  Most CI log viewers make the URL clickable — open it to jump straight from the build to the run in Nijam.
+  Most CI log viewers make the URL clickable - open it to jump straight from the build to the run in Nijam.
   Set `nijam_silent = true` to suppress all `[nijam]` output.
 </Aside>
 
@@ -129,7 +129,7 @@ that run to **Failing** right away. The dashboard shows **running / failing** li
 
 When each job runs a **different subset of tests**, there's no known total, so each job must _not_ finalize
 on its own. Set **`nijam_auto_complete = false`** (or the **`NIJAM_AUTO_COMPLETE=false`** env var), then
-add **one post-matrix step** that calls `POST /v1/runs/complete` to mark the run done — passing the **CI
+add **one post-matrix step** that calls `POST /v1/runs/complete` to mark the run done - passing the **CI
 run id the jobs shared** (`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …) so it targets the right run.
 
 ```yaml title=".github/workflows/tests.yml"
@@ -165,11 +165,11 @@ jobs:
 
 <Aside type="caution">
   As a safety net, Nijam auto-marks any run with **no activity for over an hour**
-  as **Canceled** — so a crashed job or a forgotten completion step never leaves
+  as **Canceled** - so a crashed job or a forgotten completion step never leaves
   a run stuck on "Running".
 </Aside>
 
-A single `pytest` run needs none of this — it completes on its own.
+A single `pytest` run needs none of this - it completes on its own.
 
 ## Other CI systems
 
@@ -189,9 +189,9 @@ list lives in the [CI variables reference](/reference/ci-variables/).
 
 To send runs and reports to Nijam, the plugin needs **two** things:
 
-- **`nijam_project_id`** — which project to push to. Not a secret; it just identifies the project. Usually
+- **`nijam_project_id`** - which project to push to. Not a secret; it just identifies the project. Usually
   set in `pytest.ini` (or via `NIJAM_PROJECT_ID`).
-- **API key** — the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via
+- **API key** - the only **secret**. Store it as `NIJAM_API_KEY` in your CI secrets and reference it via
   the environment.
 
-Everything else — commit, branch, PR, CI link, author — is detected automatically.
+Everything else - commit, branch, PR, CI link, author - is detected automatically.

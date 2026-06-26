@@ -7,7 +7,7 @@ sidebar:
 
 The Nijam pytest plugin is configured with ini options under `[pytest]` in `pytest.ini` (or
 `[tool.pytest.ini_options]` in `pyproject.toml`). Every ini key is also overridable by an environment
-variable, and **the environment variable wins** when both are set — handy for keeping secrets out of the
+variable, and **the environment variable wins** when both are set - handy for keeping secrets out of the
 repo and varying per-pipeline values in CI. Only the API key and `nijam_project_id` are required;
 everything else has a sensible default. There are **no test-code changes**.
 
@@ -40,13 +40,13 @@ Each ini key has a matching environment variable; the env var takes precedence.
 
 | ini key               | Env var               | Required | Default                 | Description                                                                                |
 | --------------------- | --------------------- | -------- | ----------------------- | ------------------------------------------------------------------------------------------ |
-| `nijam_api_key`       | `NIJAM_API_KEY`       | yes      | —                       | API key from the Nijam dashboard. Set it as a CI secret via the env var.                    |
-| `nijam_project_id`    | `NIJAM_PROJECT_ID`    | yes      | —                       | The project's ID (UUID) from the dashboard.                                                 |
+| `nijam_api_key`       | `NIJAM_API_KEY`       | yes      | -                       | API key from the Nijam dashboard. Set it as a CI secret via the env var.                    |
+| `nijam_project_id`    | `NIJAM_PROJECT_ID`    | yes      | -                       | The project's ID (UUID) from the dashboard.                                                 |
 | `nijam_api_url`       | `NIJAM_API_URL`       | no       | `https://api.nijam.dev` | API base URL. You don't normally need to set this.                                          |
-| `nijam_environment`   | `NIJAM_ENVIRONMENT`   | no       | —                       | Free-form deploy tag (e.g. `staging`). Adds a run filter. Runs without it show as **Unset**.|
-| `nijam_upload_source` | —                     | no       | `true`                  | Upload test source so the dashboard renders tests inline. Set `false` to opt out.          |
+| `nijam_environment`   | `NIJAM_ENVIRONMENT`   | no       | -                       | Free-form deploy tag (e.g. `staging`). Adds a run filter. Runs without it show as **Unset**.|
+| `nijam_upload_source` | -                     | no       | `true`                  | Upload test source so the dashboard renders tests inline. Set `false` to opt out.          |
 | `nijam_auto_complete` | `NIJAM_AUTO_COMPLETE` | no       | `true`                  | Finalize the run when the suite ends. Set `false` for fan-out CI.                           |
-| `nijam_silent`        | —                     | no       | `false`                 | Suppress all `[nijam]` log lines.                                                           |
+| `nijam_silent`        | -                     | no       | `false`                 | Suppress all `[nijam]` log lines.                                                           |
 
 For `nijam_environment`, see [Environments](/reporter/pytest/environments/). For `nijam_upload_source`,
 see [Source](/reporter/pytest/source/). For `nijam_auto_complete`, see
@@ -54,9 +54,9 @@ see [Source](/reporter/pytest/source/). For `nijam_auto_complete`, see
 
 ## Where do I get these?
 
-- **`nijam_project_id`** — open your project in the [dashboard](https://www.nijam.dev) and copy its
+- **`nijam_project_id`** - open your project in the [dashboard](https://www.nijam.dev) and copy its
   Project ID.
-- **API key** — generate one in the project's settings and set it as `NIJAM_API_KEY` in your CI secrets.
+- **API key** - generate one in the project's settings and set it as `NIJAM_API_KEY` in your CI secrets.
 
 ## Fail-soft behavior
 
@@ -66,5 +66,5 @@ Set `nijam_silent = true` to suppress even those warnings.
 
 ## CI metadata
 
-You don't configure commit/branch/PR/author — the plugin [auto-detects](/reporter/pytest/ci-integration/)
+You don't configure commit/branch/PR/author - the plugin [auto-detects](/reporter/pytest/ci-integration/)
 them from your CI provider's environment variables, falling back to `git`.

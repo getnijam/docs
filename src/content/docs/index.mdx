@@ -1,9 +1,9 @@
 ---
 title: Nijam Docs
-description: Test analytics for Playwright, pytest, and Vitest — run history, flakiness scoring, and failure analysis from every CI run. Think Sentry, for your tests.
+description: Test analytics for Playwright, pytest, and Vitest. Run history, flakiness scoring, and failure analysis from every CI run. Think Sentry, for your tests.
 template: splash
 hero:
-  tagline: The missing dashboard for your test suite — run history, flakiness scoring, and failure analysis from every CI run. Think Sentry, for your tests. Ship the reporter, get it all — without touching your test code.
+  tagline: The missing dashboard for your test suite. Run history, flakiness scoring, and failure analysis from every CI run. Think Sentry, for your tests. Ship the reporter, get it all without touching your test code.
   image:
     file: ../../assets/logo.png
   actions:
@@ -20,17 +20,17 @@ import { Card, CardGrid, LinkCard, Tabs, TabItem } from '@astrojs/starlight/comp
 
 ## What is Nijam?
 
-Nijam collects every test run from your CI — **Playwright, pytest, or Vitest** — stores its history, and
+Nijam collects every test run from your CI (**Playwright, pytest, or Vitest**), stores its history, and
 surfaces the things a raw test report can't: which tests are **flaky**, which ones **regressed**, and the
-**failures** behind every red build — all in one dashboard. You add a reporter; Nijam does the rest.
+**failures** behind every red build, all in one dashboard. You add a reporter; Nijam does the rest.
 
 <CardGrid stagger>
 	<Card title="Drop-in reporter" icon="rocket">
 		Add `@nijam/pw-reporter` (Playwright), `pytest-nijam` (pytest), or `@nijam/vitest-reporter`
-		(Vitest). It's **fail-soft** — if Nijam is unreachable it logs a warning and never breaks your CI.
+		(Vitest). It's **fail-soft**: if Nijam is unreachable it logs a warning and never breaks your CI.
 	</Card>
 	<Card title="Run history" icon="bars">
-		Every run is stored with its commit, branch, PR, CI link, and author — so you can see how a
+		Every run is stored with its commit, branch, PR, CI link, and author, so you can see how a
 		test behaves over time, not just on the last run.
 	</Card>
 	<Card title="Flakiness scoring" icon="random">
@@ -47,13 +47,13 @@ surfaces the things a raw test report can't: which tests are **flaky**, which on
 ## Set it up with AI
 
 Using Cursor, Claude Code, Copilot, or any other AI coding assistant? Pick your framework, paste the prompt,
-and it'll install and wire up the reporter for you — just swap in your project ID from the
+and it'll install and wire up the reporter for you - just swap in your project ID from the
 [dashboard](https://www.nijam.dev).
 
 <Tabs syncKey="framework">
 <TabItem label="Playwright">
 
-```text title="Prompt — add the Nijam Playwright reporter" collapse={2-23}
+```text title="Prompt - add the Nijam Playwright reporter" collapse={2-23}
 Add the Nijam Playwright reporter (@nijam/pw-reporter) to this project.
 
 1. Install @nijam/pw-reporter as a dev dependency, using whichever package manager
@@ -69,7 +69,7 @@ Add the Nijam Playwright reporter (@nijam/pw-reporter) to this project.
      }],
    ]
 
-3. Read the API key from process.env.NIJAM_API_KEY — never hardcode it. Remind me to
+3. Read the API key from process.env.NIJAM_API_KEY - never hardcode it. Remind me to
    set NIJAM_API_KEY as a CI secret, and to add it to .env.local for local runs.
 
 4. Do not change any test code. The reporter is fail-soft (it never breaks CI) and
@@ -82,7 +82,7 @@ Reporter docs: https://docs.nijam.dev/reporter/playwright/configuration/
 </TabItem>
 <TabItem label="pytest">
 
-```text title="Prompt — add the Nijam pytest plugin" collapse={2-21}
+```text title="Prompt - add the Nijam pytest plugin" collapse={2-21}
 Add the Nijam pytest plugin (pytest-nijam) to this project.
 
 1. Install pytest-nijam as a dev dependency, using whichever tool this repo already
@@ -94,7 +94,7 @@ Add the Nijam pytest plugin (pytest-nijam) to this project.
    [pytest]
    nijam_project_id = YOUR_PROJECT_ID
 
-3. The plugin auto-loads — do NOT change any test code. Read the API key from the
+3. The plugin auto-loads - do NOT change any test code. Read the API key from the
    NIJAM_API_KEY environment variable; remind me to set it as a CI secret and to add
    it to my local environment for local runs.
 
@@ -109,7 +109,7 @@ Reporter docs: https://docs.nijam.dev/reporter/pytest/configuration/
 </TabItem>
 <TabItem label="Vitest">
 
-```text title="Prompt — add the Nijam Vitest reporter" collapse={2-25}
+```text title="Prompt - add the Nijam Vitest reporter" collapse={2-25}
 Add the Nijam Vitest reporter (@nijam/vitest-reporter) to this project.
 
 1. Install @nijam/vitest-reporter as a dev dependency, using whichever package manager
@@ -130,7 +130,7 @@ Add the Nijam Vitest reporter (@nijam/vitest-reporter) to this project.
      },
    });
 
-3. Read the API key from process.env.NIJAM_API_KEY — never hardcode it. Remind me to
+3. Read the API key from process.env.NIJAM_API_KEY - never hardcode it. Remind me to
    set NIJAM_API_KEY as a CI secret, and to add it to .env.local for local runs.
 
 4. Do not change any test code. The reporter is fail-soft (it never breaks CI) and
@@ -152,6 +152,6 @@ same steps.
 <CardGrid>
 	<LinkCard title="Quickstart" href="/getting-started/quickstart/" description="From sign-up to your first run in five minutes." />
 	<LinkCard title="Reporter configuration" href="/reporter/playwright/configuration/" description="Every option, with defaults and examples." />
-	<LinkCard title="CI integration" href="/reporter/playwright/ci-integration/" description="GitHub Actions, GitLab, CircleCI, Bitbucket — auto-detected." />
+	<LinkCard title="CI integration" href="/reporter/playwright/ci-integration/" description="GitHub Actions, GitLab, CircleCI, Bitbucket - auto-detected." />
 	<LinkCard title="Plans & pricing" href="/billing/plans/" description="Free and Pro, what's included, and how usage is billed." />
 </CardGrid>

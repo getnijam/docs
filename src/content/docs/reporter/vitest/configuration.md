@@ -49,10 +49,10 @@ All options are passed to the `NijamReporter` constructor.
 
 | Option         | Required | Default                 | Description                                                                                         |
 | -------------- | -------- | ----------------------- | --------------------------------------------------------------------------------------------------- |
-| `apiKey`       | yes      | —                       | API key from the Nijam dashboard. Store it as a CI secret.                                           |
-| `projectId`    | yes      | —                       | The project's ID (UUID) from the dashboard.                                                          |
+| `apiKey`       | yes      | -                       | API key from the Nijam dashboard. Store it as a CI secret.                                           |
+| `projectId`    | yes      | -                       | The project's ID (UUID) from the dashboard.                                                          |
 | `apiUrl`       | no       | `https://api.nijam.dev` | API base URL. Also settable via `NIJAM_API_URL`. You don't normally need to set this.                |
-| `environment`  | no       | —                       | Free-form deploy tag (e.g. `"staging"`). Adds a run filter. Runs without it show as **Unset**.       |
+| `environment`  | no       | -                       | Free-form deploy tag (e.g. `"staging"`). Adds a run filter. Runs without it show as **Unset**.       |
 | `uploadSource` | no       | `true`                  | Upload test source so the dashboard renders tests inline. Set `false` to opt out.                   |
 | `autoComplete` | no       | `true`                  | Finalize the run when the suite ends. Set `false` (or `NIJAM_AUTO_COMPLETE=false`) for fan-out CI.   |
 | `silent`       | no       | `false`                 | Suppress all `[nijam]` log lines.                                                                    |
@@ -63,8 +63,8 @@ For `environment`, see [Environments](/reporter/vitest/environments/). For `uplo
 
 ## Where do I get these?
 
-- **`projectId`** — open your project in the [dashboard](https://www.nijam.dev) and copy its Project ID.
-- **`apiKey`** — generate one in the project's settings and set it as `NIJAM_API_KEY` in your CI secrets.
+- **`projectId`** - open your project in the [dashboard](https://www.nijam.dev) and copy its Project ID.
+- **`apiKey`** - generate one in the project's settings and set it as `NIJAM_API_KEY` in your CI secrets.
 
 ## Fail-soft behavior
 
@@ -74,5 +74,5 @@ Set `silent: true` to suppress even those warnings.
 
 ## CI metadata
 
-You don't configure commit/branch/PR/author — the reporter [auto-detects](/reporter/vitest/ci-integration/)
+You don't configure commit/branch/PR/author - the reporter [auto-detects](/reporter/vitest/ci-integration/)
 them from your CI provider's environment variables, falling back to `git`.

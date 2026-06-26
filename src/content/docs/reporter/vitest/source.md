@@ -1,6 +1,6 @@
 ---
 title: Source
-description: What the Vitest reporter uploads — test source and error logs — and how to control it.
+description: What the Vitest reporter uploads - test source and error logs - and how to control it.
 sidebar:
   order: 5
 ---
@@ -15,7 +15,7 @@ So the **test detail** page can render each test inline with its run history (in
 to your repo), the reporter uploads the source of each test file the run executed. This is **on by
 default**.
 
-- Only the test files the run actually executed are uploaded — **never your application code**.
+- Only the test files the run actually executed are uploaded - **never your application code**.
 - Paths are relative to the Vitest root.
 - Files over **256 KB are skipped**.
 - Uploads are capped at **4 concurrent**, and any read/upload error is logged as a `[nijam]` warning and
@@ -34,7 +34,7 @@ new NijamReporter({
 ```
 
 With source off, the dashboard still links to the test at the run's commit via your provider
-(GitHub/GitLab/Bitbucket) — you just don't get the inline render.
+(GitHub/GitLab/Bitbucket) - you just don't get the inline render.
 
 ## Failure detail
 
@@ -51,8 +51,8 @@ Vitest's built-in `retry` reruns are reported to Nijam, which is how a test gets
 
 | Uploaded                  | When                | Limits                                  |
 | ------------------------- | ------------------- | --------------------------------------- |
-| Test results + metadata   | every run           | —                                       |
-| Error log + failing line  | every failure       | —                                       |
+| Test results + metadata   | every run           | -                                       |
+| Error log + failing line  | every failure       | -                                       |
 | Test source               | every run (opt-out) | skip > 256 KB; 4 concurrent; tests only |
 
 Everything here is **fail-soft**: if any upload fails, the reporter warns and moves on. Your CI run's

@@ -80,5 +80,5 @@ Set these on unsupported providers and the reporter picks them up:
 ## Git fallback
 
 When no CI or generic variables are set, the reporter resolves commit/branch/author from the local
-repository via `git log -1`, `git rev-parse`, and `git config user.email`/`user.name` — so even local runs
+repository via `git log -1`, `git rev-parse`, and `git config user.email`/`user.name` - so even local runs
 are attributed.

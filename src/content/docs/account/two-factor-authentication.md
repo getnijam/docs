@@ -1,6 +1,6 @@
 ---
 title: Two-factor authentication
-description: Add a one-time code from an authenticator app as a second step when you sign in to Nijam — and how to recover with backup codes.
+description: Add a one-time code from an authenticator app as a second step when you sign in to Nijam - and how to recover with backup codes.
 sidebar:
   order: 1
 ---
@@ -15,19 +15,19 @@ account menu in the bottom-left of the dashboard and choose **Account settings**
 ## Enabling 2FA
 
 1. Go to **Account settings → Security** and click **Enable** next to *Authenticator app*.
-2. **Scan the QR code** with an authenticator app — Google Authenticator, 1Password, Authy,
+2. **Scan the QR code** with an authenticator app - Google Authenticator, 1Password, Authy,
    Microsoft Authenticator, or any TOTP-compatible app. Can't scan? Enter the **setup key**
    shown below the code manually.
 3. Your app now shows a 6-digit code that changes every 30 seconds. Type the current code into
    **Verification code** and click **Enable**.
-4. Nijam shows your **backup codes** — save them now (see below), then click **I've saved my
+4. Nijam shows your **backup codes** - save them now (see below), then click **I've saved my
    codes**.
 
 That's it. The next time you sign in with your email and password, you'll be asked for a code.
 
 :::note
 Nijam uses standard **TOTP** (time-based one-time passwords), so any authenticator app works.
-The codes are generated on your device — Nijam never sees your app or your phone.
+The codes are generated on your device - Nijam never sees your app or your phone.
 :::
 
 ## Backup codes
@@ -36,7 +36,7 @@ When you enable 2FA, Nijam gives you **10 one-time backup codes** (formatted lik
 Use one to sign in if you ever lose access to your authenticator app.
 
 - **Each code works once.** After you use a code, it's spent.
-- **Store them somewhere safe** — a password manager is ideal. Don't keep them only on the
+- **Store them somewhere safe** - a password manager is ideal. Don't keep them only on the
   device that runs your authenticator app.
 - They're shown **only once**, at setup. If you lose them, regenerate a new set.
 
@@ -49,9 +49,9 @@ On **Security**, click **Backup codes** and confirm. This issues a fresh set of 
 
 1. Enter your email and password as usual.
 2. On the next step, enter the **6-digit code** from your authenticator app.
-3. Mistyped it? Just re-enter the code — you won't have to type your password again.
+3. Mistyped it? Just re-enter the code - you won't have to type your password again.
 
-Choose **Use a backup code instead** to sign in with one of your saved backup codes — handy when
+Choose **Use a backup code instead** to sign in with one of your saved backup codes - handy when
 your phone isn't with you.
 
 ## Lost your device
@@ -73,13 +73,13 @@ removes the second step and deletes your stored secret and backup codes.
 ## Social logins
 
 Two-factor authentication protects sign-in with your **email and password**. If you sign in with
-**Google** or **GitHub**, that provider's own account security applies — we recommend keeping 2FA
+**Google** or **GitHub**, that provider's own account security applies - we recommend keeping 2FA
 enabled on your Google/GitHub account too.
 
 ## Accounts without a password
 
 If you only sign in with Google or GitHub (no password set), you can still turn on 2FA for an
-extra layer of protection. Sensitive actions that normally re-check your password — like
-**disabling 2FA** — will ask for a current authenticator or backup code instead.
+extra layer of protection. Sensitive actions that normally re-check your password - like
+**disabling 2FA** - will ask for a current authenticator or backup code instead.
 
 See [Organizations](/concepts/organizations/) for how members, roles, and invitations work.

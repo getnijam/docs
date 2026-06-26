@@ -13,11 +13,11 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
 
 1. **Create an account.**
 
-   Sign up at [nijam.dev](https://www.nijam.dev) — **continue with Google or GitHub**, or use your email
+   Sign up at [nijam.dev](https://www.nijam.dev) - **continue with Google or GitHub**, or use your email
    and a password. You'll land on your organizations screen.
 
    <Aside type="tip">
-     These all sign you into the **same account** when they share an email — sign up with a password and
+     These all sign you into the **same account** when they share an email - sign up with a password and
      later "continue with Google", or vice versa, and you land in the same place. (To add a password to a
      Google/GitHub-only account, use **Forgot password** to set one.)
    </Aside>
@@ -29,21 +29,21 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
 
 3. **Create a project and copy its ID.**
 
-   Inside your org, create a [project](/concepts/projects/) — one per test suite/repo (Playwright,
+   Inside your org, create a [project](/concepts/projects/) - one per test suite/repo (Playwright,
    pytest, or Vitest). Copy its **Project ID** (a UUID); the reporter needs it.
 
 4. **Generate an API key.**
 
-   In the project's settings, generate an **API key**. Treat it like a password — store it as a CI secret,
+   In the project's settings, generate an **API key**. Treat it like a password - store it as a CI secret,
    not in your repo.
 
    <Aside type="caution">
-   The API key authorizes uploads to your project. Keep it in CI secrets (e.g. `NIJAM_API_KEY`) — never
+   The API key authorizes uploads to your project. Keep it in CI secrets (e.g. `NIJAM_API_KEY`) - never
    commit it.
    </Aside>
 
    <Aside type="note">
-   This is an **ingestion key** (`nij_sk_…`) — it can only upload, never read. To let AI agents query
+   This is an **ingestion key** (`nij_sk_…`) - it can only upload, never read. To let AI agents query
    your runs, create a separate read-only key and follow the [MCP server](/integrations/mcp/) guide.
    </Aside>
 
@@ -72,7 +72,7 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
    });
    ```
 
-   Keep your existing reporters too — Playwright accepts a list, so Nijam runs alongside `list`, `html`,
+   Keep your existing reporters too - Playwright accepts a list, so Nijam runs alongside `list`, `html`,
    etc.
 
    </TabItem>
@@ -82,7 +82,7 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
    pip install pytest-nijam
    ```
 
-   `pytest-nijam` is a plugin — it **auto-loads**, no code changes. Configure it in `pytest.ini` (or
+   `pytest-nijam` is a plugin - it **auto-loads**, no code changes. Configure it in `pytest.ini` (or
    `[tool.pytest.ini_options]` in `pyproject.toml`) and set the API key as an env var:
 
    ```ini title="pytest.ini"
@@ -148,20 +148,20 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
    </TabItem>
    </Tabs>
 
-   On a real CI run, commit/branch/PR/author are [detected automatically](/reporter/playwright/ci-integration/) — no
+   On a real CI run, commit/branch/PR/author are [detected automatically](/reporter/playwright/ci-integration/) - no
    extra config.
 
    <Aside type="tip">
-     The reporter prints a link to the run straight to your terminal (and your CI logs) — once when it
+     The reporter prints a link to the run straight to your terminal (and your CI logs) - once when it
      **starts** and again when it **finishes**, so it's there to click without scrolling back:
 
      ```text
-     [nijam] run started — view it at https://www.nijam.dev/...
+     [nijam] run started - view it at https://www.nijam.dev/...
      ...
-     [nijam] run finalized (12/14 passed) — view it at https://www.nijam.dev/...
+     [nijam] run finalized (12/14 passed) - view it at https://www.nijam.dev/...
      ```
 
-     Click it to jump to the run in the dashboard — no need to go hunting for it. (Set `silent: true` to
+     Click it to jump to the run in the dashboard - no need to go hunting for it. (Set `silent: true` to
      suppress all `[nijam]` output.)
    </Aside>
 
@@ -174,6 +174,6 @@ This guide takes you from a fresh account to seeing your first run in the dashbo
 
 ## Where to go next
 
-- [Reporter configuration](/reporter/playwright/configuration/) — every option explained.
-- [CI integration](/reporter/playwright/ci-integration/) — wiring it into GitHub Actions, GitLab, CircleCI, Bitbucket.
-- [Core concepts](/concepts/organizations/) — how orgs, projects, and runs relate.
+- [Reporter configuration](/reporter/playwright/configuration/) - every option explained.
+- [CI integration](/reporter/playwright/ci-integration/) - wiring it into GitHub Actions, GitLab, CircleCI, Bitbucket.
+- [Core concepts](/concepts/organizations/) - how orgs, projects, and runs relate.

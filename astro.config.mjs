@@ -5,7 +5,7 @@ import { pluginCollapsibleSections } from '@expressive-code/plugin-collapsible-s
 
 // https://astro.build/config
 export default defineConfig({
-	// Canonical URL — used for sitemap + social cards. Update if the docs host changes.
+	// Canonical URL - used for sitemap + social cards. Update if the docs host changes.
 	site: 'https://docs.nijam.dev',
 	// The reporter docs split from one flat section into per-framework sections.
 	// Keep the old flat URLs resolving by redirecting them to the Playwright pages.
@@ -16,7 +16,7 @@ export default defineConfig({
 		'/reporter/environments/': '/reporter/playwright/environments/',
 		'/reporter/source-and-traces/': '/reporter/playwright/source-and-traces/',
 	},
-	// Ensure GitHub-Flavored Markdown (tables, etc.) is applied to .mdx too — the MDX
+	// Ensure GitHub-Flavored Markdown (tables, etc.) is applied to .mdx too - the MDX
 	// integration only enables GFM when this is set, so tables render in .mdx like in .md.
 	markdown: {
 		gfm: true,
@@ -25,7 +25,7 @@ export default defineConfig({
 		starlight({
 			title: 'Nijam Docs',
 			description:
-				'Documentation for Nijam — test analytics for Playwright, pytest, and Vitest. Run history, flakiness scoring, and failure analysis.',
+				'Documentation for Nijam - test analytics for Playwright, pytest, and Vitest. Run history, flakiness scoring, and failure analysis.',
 			logo: {
 				src: './src/assets/logo.svg',
 				alt: 'Nijam',
