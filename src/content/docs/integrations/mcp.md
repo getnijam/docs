@@ -5,7 +5,7 @@ sidebar:
   order: 3
 ---
 
-The Nijam **MCP server** lets any [Model Context Protocol](https://modelcontextprotocol.io)–capable
+The Nijam **MCP server** lets any [Model Context Protocol](https://modelcontextprotocol.io)-capable
 agent - Claude Code, Cursor, Codex, Claude Desktop, and others - answer questions about your test
 runs straight from your real history:
 
