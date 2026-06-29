@@ -1,0 +1,222 @@
+---
+title: Re-run only failed tests
+description: Fetch the previous run's failures from Nijam and re-run just those in CI, then see every attempt clubbed into one run.
+sidebar:
+  order: 1
+---
+
+import { Tabs, TabItem, Aside } from "@astrojs/starlight/components";
+
+When a CI run fails on a handful of flaky tests, re-running the **whole** suite wastes minutes. Nijam
+remembers which tests failed, so a retry can run **only those**. Each attempt is **clubbed** into one run
+on the dashboard, with a status **rolled up across attempts**: a test that failed on the first attempt and
+passed on the retry shows the run as recovered, not as two unrelated runs.
+
+## How it works
+
+1. Your test job runs and reports to Nijam as usual.
+2. If it fails, a retry step runs `nijam-... fetch-failed`. That asks Nijam which tests failed in the
+   previous attempt (keyed by each test's stable id) and writes a filter file for your test runner.
+3. You run the test runner with that filter, so only the previous failures execute.
+4. The retry reports as a **new attempt of the same run**. The dashboard groups the attempts and rolls up
+   the result.
+
+<Aside type="note">
+  `fetch-failed` uses the **same `NIJAM_API_KEY`** your reporter already uses. It returns only the failing
+  tests' identifiers (id, file, line, title), never traces or other data, so the key you put in CI stays
+  safe to expose.
+</Aside>
+
+## The fetch-failed command
+
+The CLI ships with each reporter. It writes the framework's native filter to `--output`, and (with
+`--export-env`) the variables that club the retry under the original run.
+
+<Tabs syncKey="framework">
+<TabItem label="Playwright">
+
+`nijam-pw` is installed with `@nijam/pw-reporter`. It prints `file:line` tokens, which Playwright runs
+directly.
+
+```bash
+npx nijam-pw fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+# failed.txt -> e2e/login.spec.ts:42  e2e/cart.spec.ts:17
+npx playwright test $(cat failed.txt)
+```
+
+</TabItem>
+<TabItem label="pytest">
+
+`nijam-pytest` is installed with `pytest-nijam`. It prints the failing **nodeids**, which pytest runs
+directly.
+
+```bash
+nijam-pytest fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+# failed.txt -> tests/test_login.py::test_redirect  tests/test_cart.py::test_add
+pytest $(cat failed.txt)
+```
+
+</TabItem>
+<TabItem label="Vitest">
+
+`nijam-vitest` is installed with `@nijam/vitest-reporter`. Vitest has no run-by-line, so the CLI prints
+the failing **files** and exports a `NIJAM_TEST_NAME_PATTERN` regex of the failing test names. Pair them:
+
+```bash
+npx nijam-vitest fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+# failed.txt -> src/login.test.ts  src/cart.test.ts
+npx vitest run $(cat failed.txt) -t "$NIJAM_TEST_NAME_PATTERN"
+```
+
+</TabItem>
+</Tabs>
+
+<Aside type="tip">
+  `fetch-failed` never fails your build. If it can't reach Nijam, or nothing failed previously, it writes
+  an empty file and exits `0`. That's why the recipes below guard with `[ -s failed.txt ]` and fall back to
+  the full suite, so an infrastructure hiccup never silently skips your tests.
+</Aside>
+
+## In CI
+
+The recipes below run the suite, and **on failure** fetch the previous failures and re-run only those in
+the **same job**. Because `--export-env` writes a fresh `NIJAM_RUN_ATTEMPT`, the retry is a distinct
+attempt clubbed under the original run. The Playwright command is shown; swap it for the pytest or Vitest
+line from above.
+
+<Tabs syncKey="ci">
+<TabItem label="GitHub Actions">
+
+`continue-on-error` lets the first step fail without ending the job, so the retry decides the final status.
+Re-running and passing turns the job (and the clubbed Nijam run) green.
+
+```yaml title=".github/workflows/e2e.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    env:
+      NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+      NIJAM_PROJECT_ID: <your-project-id>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx playwright install --with-deps
+
+      - name: Run tests
+        id: tests
+        continue-on-error: true
+        run: npx playwright test
+
+      - name: Re-run only the failed tests
+        if: steps.tests.outcome == 'failure'
+        run: |
+          npx nijam-pw fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+          if [ -s failed.txt ]; then
+            npx playwright test $(cat failed.txt)
+          else
+            echo "No failures recorded; re-running the full suite."
+            npx playwright test
+          fi
+```
+
+</TabItem>
+<TabItem label="GitLab CI">
+
+Everything runs in one `script`, so `source` the exported vars into the shell before the retry. A retried
+job keeps the same `CI_PIPELINE_ID`, so it clubs automatically.
+
+```yaml title=".gitlab-ci.yml"
+e2e:
+  image: mcr.microsoft.com/playwright:latest
+  variables:
+    NIJAM_API_KEY: $NIJAM_API_KEY
+    NIJAM_PROJECT_ID: <your-project-id>
+  script:
+    - npm ci
+    - npx playwright test || TESTS_FAILED=1
+    - |
+      if [ "$TESTS_FAILED" = "1" ]; then
+        npx nijam-pw fetch-failed --output failed.txt --export-env nijam.env
+        set -a; . ./nijam.env; set +a
+        if [ -s failed.txt ]; then npx playwright test $(cat failed.txt); else npx playwright test; fi
+      fi
+```
+
+</TabItem>
+<TabItem label="CircleCI">
+
+Same idea: capture the failure, then fetch and retry in the same step (so the exported vars are in scope).
+
+```yaml title=".circleci/config.yml"
+jobs:
+  e2e:
+    docker: [{ image: mcr.microsoft.com/playwright:latest }]
+    environment:
+      NIJAM_PROJECT_ID: <your-project-id>
+    steps:
+      - checkout
+      - run: npm ci
+      - run: |
+          npx playwright test || TESTS_FAILED=1
+          if [ "$TESTS_FAILED" = "1" ]; then
+            npx nijam-pw fetch-failed --output failed.txt --export-env nijam.env
+            set -a; . ./nijam.env; set +a
+            if [ -s failed.txt ]; then npx playwright test $(cat failed.txt); else npx playwright test; fi
+          fi
+        environment:
+          NIJAM_API_KEY: $NIJAM_API_KEY
+```
+
+</TabItem>
+<TabItem label="Bitbucket">
+
+```yaml title="bitbucket-pipelines.yml"
+pipelines:
+  default:
+    - step:
+        image: mcr.microsoft.com/playwright:latest
+        script:
+          - npm ci
+          - export NIJAM_PROJECT_ID=<your-project-id>
+          - npx playwright test || TESTS_FAILED=1
+          - |
+            if [ "$TESTS_FAILED" = "1" ]; then
+              npx nijam-pw fetch-failed --output failed.txt --export-env nijam.env
+              set -a; . ./nijam.env; set +a
+              if [ -s failed.txt ]; then npx playwright test $(cat failed.txt); else npx playwright test; fi
+            fi
+```
+
+</TabItem>
+</Tabs>
+
+## Clubbing across attempts
+
+`fetch-failed --export-env` writes three variables the retry's reporter reads:
+
+| Variable             | Purpose                                                                   |
+| -------------------- | ------------------------------------------------------------------------- |
+| `NIJAM_RUN_GROUP`    | The original CI run id, so the retry clubs under the first attempt.        |
+| `NIJAM_RUN_ATTEMPT`  | The next attempt number, so the retry is its own attempt (not a merge).    |
+| `NIJAM_RERUN`        | Marks the run a partial re-run, tagged "failed only" in the dashboard.     |
+
+On **GitHub Actions** and **GitLab**, a re-run keeps the same run id, so attempts club even without these.
+On providers that mint a **new run id per attempt** (for example CircleCI's `CIRCLE_BUILD_NUM`), or when
+your retry runs in a **separate workflow**, pass the original id explicitly:
+
+```bash
+npx nijam-pw fetch-failed --ci-run-id "$ORIGINAL_RUN_ID" --output failed.txt --export-env nijam.env
+```
+
+<Aside type="caution">
+  Re-running only the failures means the retry's own stats cover just those tests. The dashboard accounts
+  for this: the run list and run detail show the **rolled-up** result across attempts, and the per-attempt
+  switcher lets you open any single attempt.
+</Aside>
+
+## See also
+
+- [CI variables](/reference/ci-variables/) for the full list of detected and override variables.
+- [Runs and tests](/concepts/runs-and-tests/) for how Nijam identifies a test across runs.

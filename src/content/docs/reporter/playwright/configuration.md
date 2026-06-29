@@ -66,3 +66,16 @@ Set `silent: true` to suppress even those warnings.
 
 You don't configure commit/branch/PR/author - the reporter [auto-detects](/reporter/playwright/ci-integration/)
 them from your CI provider's environment variables, falling back to `git`.
+
+## Re-run only failed tests
+
+`@nijam/pw-reporter` also ships a `nijam-pw` CLI. `nijam-pw fetch-failed` asks Nijam which tests failed in
+the previous run so a retry runs only those, and clubs the attempts into one run on the dashboard:
+
+```bash
+npx nijam-pw fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+npx playwright test $(cat failed.txt)
+```
+
+It reuses your `NIJAM_API_KEY` and `NIJAM_PROJECT_ID`. See
+[Re-run only failed tests](/guides/rerun-failed-tests/) for the full per-provider CI recipe.
