@@ -109,10 +109,17 @@ jobs:
         continue-on-error: true
         run: npx playwright test
 
+      # fetch-failed and the re-run are SEPARATE steps on purpose: --export-env writes
+      # NIJAM_RUN_ATTEMPT / NIJAM_RUN_GROUP / NIJAM_RERUN to $GITHUB_ENV, which GitHub only
+      # applies to the NEXT step. In one step the re-run wouldn't see them and would merge
+      # into attempt 1 instead of clubbing as attempt 2.
+      - name: Fetch the failed tests
+        if: steps.tests.outcome == 'failure'
+        run: npx nijam-pw fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+
       - name: Re-run only the failed tests
         if: steps.tests.outcome == 'failure'
         run: |
-          npx nijam-pw fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
           if [ -s failed.txt ]; then
             npx playwright test $(cat failed.txt)
           else
@@ -191,6 +198,187 @@ pipelines:
 
 </TabItem>
 </Tabs>
+
+## Sharded runs
+
+When you split a suite across CI **shards** (a matrix of parallel jobs), the failures land in separate
+jobs, and Nijam finalizes the run only once **every** shard has reported. So the retry can't be an inline
+step, it has to be a **post-matrix job** that runs after all shards finish, fetches the failures
+**aggregated across every shard** (the `fetch-failed` endpoint groups by test id, not by shard), and
+re-runs them in a **single unsharded** job, clubbed as attempt 2.
+
+Four rules make it work:
+
+1. **Turn off fail-fast** on the shard matrix. If a failing shard cancels the others, the run never
+   finalizes, and `fetch-failed` (which only returns finalized runs) comes back empty.
+2. **Retry in a separate job** that waits on all shards (`needs` / `requires` / a later stage).
+3. **Re-run unsharded**, `fetch-failed` already returns the whole failing set, no need to re-split a
+   handful of tests.
+4. **Keep `fetch-failed` and the re-run in separate steps** (or `source` a file) so the exported
+   `NIJAM_RUN_ATTEMPT` reaches the re-run; otherwise it merges into attempt 1 instead of clubbing.
+
+The Playwright command is shown; swap it for the pytest or Vitest line from the sections above.
+
+<Tabs syncKey="ci">
+<TabItem label="GitHub Actions">
+
+`fail-fast: false` lets every shard report; the `retry-failed` job `needs` the matrix (so it runs after
+the run is finalized) and only on `failure()`.
+
+```yaml title=".github/workflows/e2e.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false            # every shard must report so the run finalizes
+      matrix:
+        shard: [1, 2, 3, 4]
+    env:
+      NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+      NIJAM_PROJECT_ID: <your-project-id>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npx playwright install --with-deps
+      - run: npx playwright test --shard=${{ matrix.shard }}/4
+
+  retry-failed:
+    needs: test                   # runs after every shard finished (run is finalized)
+    if: failure()
+    runs-on: ubuntu-latest
+    env:
+      NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+      NIJAM_PROJECT_ID: <your-project-id>
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci && npx playwright install --with-deps
+      - name: Fetch failures (aggregated across shards)
+        run: npx nijam-pw fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+      - name: Re-run just those, unsharded
+        run: if [ -s failed.txt ]; then npx playwright test $(cat failed.txt); else echo "nothing to re-run"; fi
+```
+
+`GITHUB_RUN_ID` is the same in the matrix and the retry job, so `fetch-failed` correlates them
+automatically.
+
+</TabItem>
+<TabItem label="GitLab CI">
+
+`parallel` runs every instance even if one fails, and `when: on_failure` runs the retry job only when the
+test stage failed. The shared `CI_PIPELINE_ID` clubs them.
+
+```yaml title=".gitlab-ci.yml"
+stages: [test, retry]
+
+e2e:
+  stage: test
+  parallel: 4
+  image: mcr.microsoft.com/playwright:latest
+  variables: { NIJAM_API_KEY: $NIJAM_API_KEY, NIJAM_PROJECT_ID: "<your-project-id>" }
+  script:
+    - npm ci
+    - npx playwright test --shard=$CI_NODE_INDEX/$CI_NODE_TOTAL
+
+retry-failed:
+  stage: retry
+  when: on_failure                # only if a test-stage job failed
+  image: mcr.microsoft.com/playwright:latest
+  variables: { NIJAM_API_KEY: $NIJAM_API_KEY, NIJAM_PROJECT_ID: "<your-project-id>" }
+  script:
+    - npm ci
+    - npx nijam-pw fetch-failed --output failed.txt --export-env nijam.env
+    - set -a; . ./nijam.env; set +a
+    - if [ -s failed.txt ]; then npx playwright test $(cat failed.txt); else echo "nothing to re-run"; fi
+```
+
+</TabItem>
+<TabItem label="CircleCI">
+
+`parallelism` shards one job across containers that share `CIRCLE_BUILD_NUM`. `CIRCLE_NODE_INDEX` is
+0-based, so add 1 for Playwright's 1-based shards. Because the retry is a **different** job (a different
+`CIRCLE_BUILD_NUM`), pin the clubbing id to the workflow via `NIJAM_RUN_GROUP=$CIRCLE_WORKFLOW_ID` in both.
+
+```yaml title=".circleci/config.yml"
+version: 2.1
+jobs:
+  e2e:
+    docker: [{ image: mcr.microsoft.com/playwright:latest }]
+    parallelism: 4
+    steps:
+      - checkout
+      - run: npm ci
+      - run: |
+          export NIJAM_PROJECT_ID=<your-project-id>
+          export NIJAM_RUN_GROUP=$CIRCLE_WORKFLOW_ID
+          # swallow the failure so the workflow reaches the retry job; Nijam still records it
+          npx playwright test --shard=$((CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL || true
+  retry-failed:
+    docker: [{ image: mcr.microsoft.com/playwright:latest }]
+    steps:
+      - checkout
+      - run: npm ci
+      - run: |
+          export NIJAM_PROJECT_ID=<your-project-id>
+          npx nijam-pw fetch-failed --ci-run-id "$CIRCLE_WORKFLOW_ID" --output failed.txt --export-env nijam.env
+          set -a; . ./nijam.env; set +a
+          [ -s failed.txt ] && npx playwright test $(cat failed.txt) || echo "nothing to re-run"
+workflows:
+  e2e:
+    jobs:
+      - e2e
+      - retry-failed: { requires: [e2e] }
+```
+
+`NIJAM_API_KEY` is a CircleCI project env var (already in the shell).
+
+</TabItem>
+<TabItem label="Bitbucket">
+
+Bitbucket has no shard-index variable, so define one step per shard under `parallel`. Every step shares
+`BITBUCKET_BUILD_NUMBER`, so they club.
+
+```yaml title="bitbucket-pipelines.yml"
+image: mcr.microsoft.com/playwright:latest
+pipelines:
+  default:
+    - parallel:
+        - step:
+            name: e2e shard 1
+            script:
+              - npm ci
+              - export NIJAM_PROJECT_ID=<your-project-id>
+              - npx playwright test --shard=1/4 || true   # swallow so the retry step runs
+        - step:
+            name: e2e shard 2
+            script:
+              - npm ci
+              - export NIJAM_PROJECT_ID=<your-project-id>
+              - npx playwright test --shard=2/4 || true
+        # ...add steps for shards 3 and 4
+    - step:
+        name: retry failed
+        script:
+          - npm ci
+          - export NIJAM_PROJECT_ID=<your-project-id>
+          - npx nijam-pw fetch-failed --output failed.txt --export-env nijam.env
+          - set -a; . ./nijam.env; set +a
+          - "[ -s failed.txt ] && npx playwright test $(cat failed.txt) || echo 'nothing to re-run'"
+```
+
+`NIJAM_API_KEY` is a Bitbucket repository variable (already in the shell).
+
+</TabItem>
+</Tabs>
+
+<Aside type="note">
+  **CircleCI and Bitbucket** have no native "run this job only on failure", so the shard steps swallow
+  their failure (`|| true`) to let the workflow reach the retry step. That shard job shows green; the retry
+  step is the real signal. **GitHub** (`if: failure()`) and **GitLab** (`when: on_failure`) don't need
+  this. Either way, Nijam records the failed run regardless of the CI job's status.
+</Aside>
 
 ## Clubbing across attempts
 
