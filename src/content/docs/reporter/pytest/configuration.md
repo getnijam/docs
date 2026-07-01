@@ -68,3 +68,17 @@ Set `nijam_silent = true` to suppress even those warnings.
 
 You don't configure commit/branch/PR/author - the plugin [auto-detects](/reporter/pytest/ci-integration/)
 them from your CI provider's environment variables, falling back to `git`.
+
+## Re-run only failed tests
+
+`pytest-nijam` also installs a `nijam-pytest` CLI. `nijam-pytest fetch-failed` asks Nijam which tests
+failed in the previous run (by nodeid) so a retry runs only those, and clubs the attempts into one run on
+the dashboard:
+
+```bash
+nijam-pytest fetch-failed --output failed.txt --export-env "$GITHUB_ENV"
+pytest $(cat failed.txt)
+```
+
+It reuses your `NIJAM_API_KEY` and `NIJAM_PROJECT_ID`. See
+[Re-run only failed tests](/guides/rerun-failed-tests/) for the full per-provider CI recipe.

@@ -82,3 +82,16 @@ Set these on unsupported providers and the reporter picks them up:
 When no CI or generic variables are set, the reporter resolves commit/branch/author from the local
 repository via `git log -1`, `git rev-parse`, and `git config user.email`/`user.name` - so even local runs
 are attributed.
+
+## Re-run overrides
+
+These are set for you by `nijam-... fetch-failed --export-env` (see
+[Re-run only failed tests](/guides/rerun-failed-tests/)); you rarely set them by hand. The reporter reads
+them so a "re-run only the failures" retry clubs under the original run.
+
+| Variable                  | Read by    | Effect                                                                |
+| ------------------------- | ---------- | --------------------------------------------------------------------- |
+| `NIJAM_RUN_GROUP`         | reporter   | Overrides the detected CI run id, so the retry clubs under the original |
+| `NIJAM_RUN_ATTEMPT`       | reporter   | Overrides the attempt number, so the retry is a distinct attempt        |
+| `NIJAM_RERUN`             | reporter   | Marks the run a partial re-run (tagged "failed only" in the dashboard)  |
+| `NIJAM_TEST_NAME_PATTERN` | you (Vitest) | The `-t` regex `fetch-failed` exports to filter Vitest to the failures |

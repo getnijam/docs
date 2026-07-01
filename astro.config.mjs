@@ -46,6 +46,7 @@ export default defineConfig({
 			sidebar: [
 				{ label: 'Getting Started', items: [{ autogenerate: { directory: 'getting-started' } }] },
 				{ label: 'Core Concepts', items: [{ autogenerate: { directory: 'concepts' } }] },
+				{ label: 'Guides', items: [{ autogenerate: { directory: 'guides' } }] },
 				{ label: 'Account', items: [{ autogenerate: { directory: 'account' } }] },
 						{ label: 'Playwright', items: [{ autogenerate: { directory: 'reporter/playwright' } }] },
 					{ label: 'pytest', items: [{ autogenerate: { directory: 'reporter/pytest' } }] },
