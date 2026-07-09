@@ -1,6 +1,6 @@
 ---
 title: CI integration
-description: Vitest run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket.
+description: Vitest run history metadata is auto-detected on GitHub Actions, GitLab, CircleCI, and Bitbucket, plus Vitest sharding.
 sidebar:
   order: 3
 ---
@@ -117,6 +117,35 @@ pipelines:
 
 </TabItem>
 </Tabs>
+
+## Sharded runs
+
+Running `vitest --shard=<i>/<N>` is **auto-detected** from Vitest's `config.shard`. Every shard of the same
+CI run **clubs into one Nijam run** (they share the CI run id), each test execution is tagged with the
+**1-based shard index** it ran on (`i` of `N`), and because Vitest knows the **total**, Nijam completes the
+run **once every shard has reported**. Nothing to configure, no post-matrix step.
+
+```yaml title=".github/workflows/tests.yml"
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - run: npm ci
+      - run: npx vitest run --shard=${{ matrix.shard }}/4
+        env:
+          NIJAM_API_KEY: ${{ secrets.NIJAM_API_KEY }}
+```
+
+Unlike the Playwright reporter, the Vitest reporter detects **only** native `--shard`: there is no
+`NIJAM_SHARD_INDEX` / `NIJAM_SHARD_TOTAL` override. To split test **files** across jobs without `--shard`,
+use the job matrix below.
 
 ## Splitting across jobs
 

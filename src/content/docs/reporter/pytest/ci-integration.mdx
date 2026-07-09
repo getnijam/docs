@@ -132,6 +132,10 @@ on its own. Set **`nijam_auto_complete = false`** (or the **`NIJAM_AUTO_COMPLETE
 add **one post-matrix step** that calls `POST /v1/runs/complete` to mark the run done - passing the **CI
 run id the jobs shared** (`GITHUB_RUN_ID`, `CI_PIPELINE_ID`, …) so it targets the right run.
 
+pytest has **no native `--shard`** (unlike the Playwright and Vitest reporters), so there's no
+`NIJAM_SHARD_INDEX` / `NIJAM_SHARD_TOTAL` shortcut: this matrix plus the completion step is how you fan a
+pytest suite out across jobs.
+
 ```yaml title=".github/workflows/tests.yml"
 jobs:
   test:
