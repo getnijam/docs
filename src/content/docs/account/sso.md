@@ -65,7 +65,7 @@ Your **Issuer URL** is your provider's base URL - for Okta it's your org domain 
 
 1. Open **Org settings → Single sign-on** and click **Connect provider**.
 2. Paste your **Issuer URL**, **Client ID**, and **Client secret**.
-3. Choose your provisioning and role options (see below), then click **Connect provider**.
+3. Optionally turn on **Require SSO** (see below), then click **Connect provider**.
 
 Nijam validates the connection by fetching your provider's OIDC discovery document, so a wrong issuer
 URL is caught immediately. The client secret is encrypted at rest and never shown again - when editing
@@ -86,22 +86,21 @@ also power [auto-join](/concepts/organizations/#auto-join-by-verified-domain).
 A domain can be claimed by only one organization. When you haven't verified one yet, the SSO settings
 page links straight to **Domains**.
 
-## Just-in-time provisioning
+## Accounts and membership
 
-With **just-in-time (JIT) provisioning** on (the default), the first time someone signs in via SSO with
-a verified-domain email, Nijam creates their account and adds them to your organization with the
-**default role** you choose (Member or Admin). Existing Nijam users are matched by email and simply have
-their provider identity linked.
+SSO is an **authentication** method. Signing in with it verifies who someone is and gives them a Nijam
+account (created on their first sign-in, or matched by email if they already have one, with their provider
+identity linked), but it does **not** add them to your organization. Membership comes from either:
 
-Turn JIT off to require that users already be members - they must be [invited](/concepts/organizations/)
-the normal way before they can sign in via SSO.
+- an [invitation](/concepts/organizations/#invitations), or
+- [verified-domain auto-join](/concepts/organizations/#auto-join-by-verified-domain), which you turn on
+  per domain in **Org settings → Domains**. With it on, anyone who signs in (via SSO or otherwise) with a
+  verified email on that domain can join your org from their org picker.
 
 :::note
-With JIT on, your identity provider is effectively the source of truth for membership: removing a member
-in Nijam while they're still active in your IdP will **re-add them** on their next sign-in. To revoke
-someone's access for good, deprovision them in your identity provider (or remove the domain / disable
-SSO). Signing in via SSO authenticates a person's Nijam account but never grants access to organizations
-they aren't a member of - so removing someone from one org never affects their access to others.
+Keeping authentication and membership separate means removing someone from one org never locks them out of
+Nijam entirely, and one work identity can belong to several orgs. To fully revoke access, **deprovision
+the user in your identity provider**, which stops them authenticating at all.
 :::
 
 ## Require SSO (enforcement)

@@ -79,12 +79,15 @@ the same list of verified domains.
 Instead of inviting teammates one by one, an admin can let anyone with a verified email on a domain you
 own join the organization themselves.
 
-1. Verify the domain (above), under **Org settings → Domains**.
-2. On the **Users** screen, turn on **auto-join** for that verified domain.
+Both steps live in **Org settings → Domains**:
 
-After that, when someone whose email is on the domain signs in, and who has **verified their own email**,
-Nijam shows them a **"Join {org}"** prompt on their organization picker and profile. They become a
-**member** when they click it. Nijam never adds people silently: joining is always an explicit action.
+1. Verify the domain (above).
+2. Turn on **auto-join** for that verified domain.
+
+After that, when someone whose email is on the domain signs in, by any method (SSO, email/password, or
+social), and who has **verified their own email**, Nijam shows them a **"Join {org}"** prompt on their
+organization picker and profile. They become a **member** when they click it. Nijam never adds people
+silently: joining is always an explicit action.
 
 Auto-join is a **Pro** feature and only **admins** can turn it on. Turning the toggle off, or removing the
 domain, stops new self-serve joins; people who already joined stay members.

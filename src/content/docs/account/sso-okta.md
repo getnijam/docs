@@ -6,8 +6,8 @@ sidebar:
 ---
 
 This is the Okta-specific walkthrough for [single sign-on](/account/sso/) - the exact screens plus the
-handful of Okta quirks that trip people up. For the general concepts (JIT provisioning, enforcement,
-domain verification), see the [main SSO page](/account/sso/).
+handful of Okta quirks that trip people up. For the general concepts (accounts and membership,
+enforcement, domain verification), see the [main SSO page](/account/sso/).
 
 :::note
 Configuring SSO is **admin-only** and requires your org to be on **Pro**.
