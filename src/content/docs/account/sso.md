@@ -73,15 +73,18 @@ later, leave the secret field blank to keep the stored one.
 
 ## 3. Verify your email domain
 
-A login only routes to SSO once Nijam has confirmed your organization owns the domain.
+A login only routes to SSO once Nijam has confirmed your organization owns the domain. Domains are
+verified once in **Org settings → Domains** and shared across features, so the same verified domain can
+also power [auto-join](/concepts/organizations/#auto-join-by-verified-domain).
 
-1. Under **Email domains**, add your company domain (e.g. `company.com`). Public domains like
+1. Open **Org settings → Domains** and add your company domain (e.g. `company.com`). Public domains like
    `gmail.com` or `outlook.com` can't be used.
-2. Nijam shows a **DNS TXT record** - a name and a value. Add it at your DNS provider.
-3. Click **Verify**. Once the record is found, the domain shows **Verified** and begins routing logins.
-   DNS changes can take a few minutes to propagate.
+2. Nijam shows a **DNS TXT record** (a name and a value). Add it at your DNS provider.
+3. Click **Verify**. Once the record is found, the domain shows **Verified** and begins routing SSO
+   logins. DNS changes can take a few minutes to propagate.
 
-A domain can be claimed by only one organization.
+A domain can be claimed by only one organization. When you haven't verified one yet, the SSO settings
+page links straight to **Domains**.
 
 ## Just-in-time provisioning
 
@@ -115,7 +118,9 @@ Enforcing SSO **claims your verified domains.** Everyone with one of those email
 identity provider across **all of Nijam** - so if someone uses their work email in another organization
 too, that login also goes through your IdP, and deprovisioning them in your IdP removes their Nijam
 access everywhere. In other words, a work email is a corporate identity your organization controls. A
-domain can only be claimed by one organization.
+domain can only be claimed by one organization. A domain you've turned on
+[auto-join](/concepts/organizations/#auto-join-by-verified-domain) for is exempt: auto-join and enforced
+SSO are opposites, so enforcement skips auto-join domains.
 :::
 
 :::caution
@@ -156,8 +161,9 @@ user still has to authenticate with your identity provider.
 ## Disabling SSO
 
 - Toggle **Enabled** off to keep the configuration but stop SSO logins (this also lifts enforcement).
-- **Remove SSO** deletes the connection and all its domains. Members keep their accounts and can use
-  email/password or social login again.
+- **Remove SSO** deletes the connection. Your **verified domains are kept** (they live in
+  **Org settings → Domains** and may be used by other features), and members keep their accounts and can
+  use email/password or social login again.
 
 ## Troubleshooting
 
