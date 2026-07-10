@@ -1,6 +1,6 @@
 ---
 title: Organizations
-description: How organizations, roles and permissions, members, seats, and invitations work in Nijam.
+description: How organizations, roles and permissions, members, seats, invitations, verified domains, and auto-join work in Nijam.
 sidebar:
   order: 1
 ---
@@ -60,6 +60,41 @@ invitee joins as a **member** (the default) or an **admin**. They receive an inv
 (signing in or creating an account with the invited email) they join the org with that role. An invitation
 is tied to the email it was sent to - accepting it from a different account shows a "wrong account"
 prompt so you can switch.
+
+## Verified domains
+
+Some features act on the **email domains your organization owns**: [single sign-on](/account/sso/) and
+auto-join (below). You prove ownership once, in **Org settings → Domains**:
+
+1. Add a domain (e.g. `company.com`). Public domains like `gmail.com` or `outlook.com` can't be used.
+2. Publish the **DNS TXT record** Nijam shows (a name and a value) at your DNS provider.
+3. Click **Verify**. DNS changes can take a few minutes to propagate.
+
+Verifying a domain is a **Pro**, **admin-only** action, and a domain can be claimed by only one
+organization. Once verified, the same domain can be used for single sign-on and for auto-join; both read
+the same list of verified domains.
+
+## Auto-join by verified domain
+
+Instead of inviting teammates one by one, an admin can let anyone with a verified email on a domain you
+own join the organization themselves.
+
+1. Verify the domain (above), under **Org settings → Domains**.
+2. On the **Users** screen, turn on **auto-join** for that verified domain.
+
+After that, when someone whose email is on the domain signs in, and who has **verified their own email**,
+Nijam shows them a **"Join {org}"** prompt on their organization picker and profile. They become a
+**member** when they click it. Nijam never adds people silently: joining is always an explicit action.
+
+Auto-join is a **Pro** feature and only **admins** can turn it on. Turning the toggle off, or removing the
+domain, stops new self-serve joins; people who already joined stay members.
+
+:::note
+Auto-join and **enforced** single sign-on are opposites for a given domain: auto-join lets people sign in
+with a password to join, so a domain you've enabled auto-join on is exempt from SSO enforcement. Use
+auto-join for open, self-serve teams, and enforced SSO for domains where the identity provider is the only
+way in.
+:::
 
 ## Creating organizations
 

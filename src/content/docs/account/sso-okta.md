@@ -45,8 +45,9 @@ JSON. A wrong issuer is the most common cause of a "we couldn't reach that ident
 ## 3. Connect it in Nijam
 
 Open **Org settings → Single sign-on → Connect provider** and paste the **Issuer URL**, **Client ID**,
-and **Client secret**. Then under **Email domains**, add your company domain and publish the DNS TXT
-record to verify it. SSO only routes a login once a domain is **Verified**.
+and **Client secret**. Then verify your company domain under **Org settings → Domains** (add it, publish
+the DNS TXT record Nijam shows, and click **Verify**). SSO only routes a login once a domain is
+**Verified**.
 
 ## 4. Assign users - the Federation Broker Mode gotcha
 
