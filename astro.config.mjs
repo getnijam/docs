@@ -53,6 +53,7 @@ export default defineConfig({
 					{ label: 'Vitest', items: [{ autogenerate: { directory: 'reporter/vitest' } }] },
 				{ label: 'Integrations', items: [{ autogenerate: { directory: 'integrations' } }] },
 				{ label: 'Billing', items: [{ autogenerate: { directory: 'billing' } }] },
+				{ label: 'Bring your own cloud', items: [{ autogenerate: { directory: 'byoc' } }] },
 				{ label: 'Reference', items: [{ autogenerate: { directory: 'reference' } }] },
 			],
 		}),
