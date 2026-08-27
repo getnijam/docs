@@ -33,6 +33,18 @@ is exactly the signal Nijam uses to flag flakiness. Each framework has its own r
 `retries`, Vitest `retry`, and pytest via the [`pytest-rerunfailures`](https://pypi.org/project/pytest-rerunfailures/)
 plugin.
 
+## Expected failures
+
+A test that is *meant* to fail is recorded the way its framework judges it, not by its raw result. On
+Playwright, a test marked [`test.fail()`](https://playwright.dev/docs/test-annotations#fail) counts as
+**passed** in Nijam when it fails, exactly as `playwright test` reports it, and its assertion error isn't
+stored (there is nothing to triage). The inverse also holds: if such a test *passes*, Playwright calls that
+a failure, and so does Nijam, with the error `Expected to fail, but passed.`
+
+The same rule applies to pytest `xfail` (recorded as skipped, like pytest's own `x` outcome, and as failed
+when a `strict=True` xfail passes) and to Vitest `test.fails`. There is nothing to configure: run statuses
+in Nijam always match the ones your framework prints.
+
 ## What counts toward usage
 
 Your plan's allowance is measured in **credits**, summed across all runs in a billing cycle. Credits are
