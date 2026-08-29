@@ -84,6 +84,15 @@ The GitHub settings page lists the repositories the Nijam App can currently acce
 repositories, **manage the installation on GitHub** (the App's settings) - Nijam reflects whatever
 access you've granted.
 
+## Using GitHub and GitLab together
+
+An org can connect both. Nijam routes each run to the provider its CI came from, so a
+GitHub Actions run posts to GitHub and a GitLab CI run posts to [GitLab](/integrations/gitlab/).
+
+If a run comes from neither (a local run, or a CI provider Nijam doesn't recognize) and
+**both** providers are connected, Nijam posts to neither, because the repository slug alone
+can't tell `owner/repo` from `group/project`. With only one connected, that one posts as usual.
+
 ## Disconnecting
 
 **Disconnect** (admin-only) removes the connection from Nijam and stops all posting. To fully revoke
