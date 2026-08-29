@@ -2,7 +2,7 @@
 title: MCP server
 description: Let AI agents query your test runs, failures, and flakiness through the Model Context Protocol.
 sidebar:
-  order: 3
+  order: 4
 ---
 
 The Nijam **MCP server** lets any [Model Context Protocol](https://modelcontextprotocol.io)-capable
