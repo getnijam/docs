@@ -31,6 +31,13 @@ Nijam distinguishes two failure shapes, because they need different responses:
 
 The test detail page shows the history timeline so you can tell which one you're looking at.
 
+## What to do about a flaky test
+
+Fixing it is the real answer, but you rarely get to do that the same day. In the meantime you can
+[**quarantine**](/concepts/quarantine/) it: the test keeps running and keeps reporting, but its
+failures stop marking runs as failed, so the suite goes back to telling you the truth about everything
+else. Nijam then tells you when it has been passing long enough to come back out.
+
 ## Getting better signal
 
 Flakiness detection improves with history, so:
